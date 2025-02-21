@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { login } from "@/app/actions/auth"
 
 export default function LoginForm() {
     const [email, setEmail] = useState("")
@@ -25,7 +24,7 @@ export default function LoginForm() {
         }
 
         try {
-            await login(email, password)
+            // await login(email, password)
             router.push("/browse") // Redirect to the browse page after successful login
         } catch (err) {
             setError("Incorrect email or password.")

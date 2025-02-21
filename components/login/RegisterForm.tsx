@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { register } from "@/app/actions/auth"
+// import { register } from "@/app/actions/auth"
 
 export default function RegisterForm() {
     const [email, setEmail] = useState("")
@@ -25,7 +25,7 @@ export default function RegisterForm() {
         }
 
         try {
-            await register(email, password)
+            // await register(email, password)
             router.push("/browse") // Redirect to the browse page after successful registration
         } catch (err) {
             setError("Unable to create account. Please try again.")
