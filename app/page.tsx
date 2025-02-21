@@ -4,6 +4,7 @@ import ContentTypeSwitcher from "./components/ContentTypeSwitcher"
 import MovieRow from "./components/MovieRow"
 import Footer from "./components/Footer"
 import Hero from "./components/Hero"
+import ImagePath from "@/public/assets/dashboard/covers/cyb3.jpg"
 
 // Mock data for movie categories
 const categories = [
@@ -138,10 +139,270 @@ const categories = [
     ],
   },
   {
-    title: "New Releases",
+    title: "Netflix",
+    movies: [
+      {
+        id: 123143,
+        title: "Shadow and Bone",
+        posterPath: "/placeholder.svg",
+        description:
+          "Dark forces conspire against orphan mapmaker Alina Starkov when she unleashes an extraordinary power that could change the fate of her war-torn world.",
+        releaseYear: 2021,
+        duration: "1 Season",
+        genre: "Fantasy",
+      },
+      {
+        id: 14,
+        title: "Jupiter's Legacy",
+        posterPath: "/placeholder.svg",
+        description:
+          "They're the first generation of superheroes. But as they pass the torch to their children, tensions are rising — and the old rules no longer apply.",
+        releaseYear: 2021,
+        duration: "1 Season",
+        genre: "Superhero",
+      },
+      {
+        id: 15,
+        title: "The Irregulars",
+        posterPath: "/placeholder.svg",
+        description:
+          "A group of misfits investigates a series of supernatural crimes in Victorian London for Dr. Watson and his shadowy associate, Sherlock Holmes.",
+        releaseYear: 2021,
+        duration: "1 Season",
+        genre: "Mystery",
+      },
+      {
+        id: 16,
+        title: "Who Killed Sara?",
+        posterPath: "/placeholder.svg",
+        description:
+          "Hell-bent on exacting revenge and proving he was framed for his sister's murder, Álex sets out to unearth much more than the crime's real culprit.",
+        releaseYear: 2021,
+        duration: "2 Seasons",
+        genre: "Thriller",
+      },
+      {
+        id: 17,
+        title: "The Serpent",
+        posterPath: "/placeholder.svg",
+        description:
+          "In the 1970s, merciless killer Charles Sobhraj preys on travelers exploring the 'hippie trail' of South Asia. Based on shocking true events.",
+        releaseYear: 2021,
+        duration: "Limited Series",
+        genre: "Crime",
+      },
+      {
+        id: 18,
+        title: "Behind Her Eyes",
+        posterPath: "/placeholder.svg",
+        description:
+          "A single mother enters a world of twisted mind games when she begins an affair with her psychiatrist boss while secretly befriending his mysterious wife.",
+        releaseYear: 2021,
+        duration: "Limited Series",
+        genre: "Psychological Thriller",
+      },
+    ],
+  },
+  {
+    title: "Amazon + ",
+    movies: [
+      {
+        id: 42513,
+        title: "Shadow and Bone",
+        posterPath: "/placeholder.svg",
+        description:
+          "Dark forces conspire against orphan mapmaker Alina Starkov when she unleashes an extraordinary power that could change the fate of her war-torn world.",
+        releaseYear: 2021,
+        duration: "1 Season",
+        genre: "Fantasy",
+      },
+      {
+        id: 14,
+        title: "Jupiter's Legacy",
+        posterPath: "/placeholder.svg",
+        description:
+          "They're the first generation of superheroes. But as they pass the torch to their children, tensions are rising — and the old rules no longer apply.",
+        releaseYear: 2021,
+        duration: "1 Season",
+        genre: "Superhero",
+      },
+      {
+        id: 15,
+        title: "The Irregulars",
+        posterPath: "/placeholder.svg",
+        description:
+          "A group of misfits investigates a series of supernatural crimes in Victorian London for Dr. Watson and his shadowy associate, Sherlock Holmes.",
+        releaseYear: 2021,
+        duration: "1 Season",
+        genre: "Mystery",
+      },
+      {
+        id: 16,
+        title: "Who Killed Sara?",
+        posterPath: "/placeholder.svg",
+        description:
+          "Hell-bent on exacting revenge and proving he was framed for his sister's murder, Álex sets out to unearth much more than the crime's real culprit.",
+        releaseYear: 2021,
+        duration: "2 Seasons",
+        genre: "Thriller",
+      },
+      {
+        id: 17,
+        title: "The Serpent",
+        posterPath: "/placeholder.svg",
+        description:
+          "In the 1970s, merciless killer Charles Sobhraj preys on travelers exploring the 'hippie trail' of South Asia. Based on shocking true events.",
+        releaseYear: 2021,
+        duration: "Limited Series",
+        genre: "Crime",
+      },
+      {
+        id: 18,
+        title: "Behind Her Eyes",
+        posterPath: "/placeholder.svg",
+        description:
+          "A single mother enters a world of twisted mind games when she begins an affair with her psychiatrist boss while secretly befriending his mysterious wife.",
+        releaseYear: 2021,
+        duration: "Limited Series",
+        genre: "Psychological Thriller",
+      },
+    ],
+  },
+  {
+    title: "HBO ",
     movies: [
       {
         id: 13,
+        title: "Shadow and Bone",
+        posterPath: "/placeholder.svg",
+        description:
+          "Dark forces conspire against orphan mapmaker Alina Starkov when she unleashes an extraordinary power that could change the fate of her war-torn world.",
+        releaseYear: 2021,
+        duration: "1 Season",
+        genre: "Fantasy",
+      },
+      {
+        id: 14,
+        title: "Jupiter's Legacy",
+        posterPath: "/placeholder.svg",
+        description:
+          "They're the first generation of superheroes. But as they pass the torch to their children, tensions are rising — and the old rules no longer apply.",
+        releaseYear: 2021,
+        duration: "1 Season",
+        genre: "Superhero",
+      },
+      {
+        id: 15,
+        title: "The Irregulars",
+        posterPath: "/placeholder.svg",
+        description:
+          "A group of misfits investigates a series of supernatural crimes in Victorian London for Dr. Watson and his shadowy associate, Sherlock Holmes.",
+        releaseYear: 2021,
+        duration: "1 Season",
+        genre: "Mystery",
+      },
+      {
+        id: 16,
+        title: "Who Killed Sara?",
+        posterPath: "/placeholder.svg",
+        description:
+          "Hell-bent on exacting revenge and proving he was framed for his sister's murder, Álex sets out to unearth much more than the crime's real culprit.",
+        releaseYear: 2021,
+        duration: "2 Seasons",
+        genre: "Thriller",
+      },
+      {
+        id: 17,
+        title: "The Serpent",
+        posterPath: "/placeholder.svg",
+        description:
+          "In the 1970s, merciless killer Charles Sobhraj preys on travelers exploring the 'hippie trail' of South Asia. Based on shocking true events.",
+        releaseYear: 2021,
+        duration: "Limited Series",
+        genre: "Crime",
+      },
+      {
+        id: 18,
+        title: "Behind Her Eyes",
+        posterPath: "/placeholder.svg",
+        description:
+          "A single mother enters a world of twisted mind games when she begins an affair with her psychiatrist boss while secretly befriending his mysterious wife.",
+        releaseYear: 2021,
+        duration: "Limited Series",
+        genre: "Psychological Thriller",
+      },
+    ],
+  },
+  {
+    title: "Paramount ",
+    movies: [
+      {
+        id: 4113,
+        title: "Shadow and Bone",
+        posterPath: "/placeholder.svg",
+        description:
+          "Dark forces conspire against orphan mapmaker Alina Starkov when she unleashes an extraordinary power that could change the fate of her war-torn world.",
+        releaseYear: 2021,
+        duration: "1 Season",
+        genre: "Fantasy",
+      },
+      {
+        id: 14,
+        title: "Jupiter's Legacy",
+        posterPath: "/placeholder.svg",
+        description:
+          "They're the first generation of superheroes. But as they pass the torch to their children, tensions are rising — and the old rules no longer apply.",
+        releaseYear: 2021,
+        duration: "1 Season",
+        genre: "Superhero",
+      },
+      {
+        id: 15,
+        title: "The Irregulars",
+        posterPath: "/placeholder.svg",
+        description:
+          "A group of misfits investigates a series of supernatural crimes in Victorian London for Dr. Watson and his shadowy associate, Sherlock Holmes.",
+        releaseYear: 2021,
+        duration: "1 Season",
+        genre: "Mystery",
+      },
+      {
+        id: 16,
+        title: "Who Killed Sara?",
+        posterPath: "/placeholder.svg",
+        description:
+          "Hell-bent on exacting revenge and proving he was framed for his sister's murder, Álex sets out to unearth much more than the crime's real culprit.",
+        releaseYear: 2021,
+        duration: "2 Seasons",
+        genre: "Thriller",
+      },
+      {
+        id: 17,
+        title: "The Serpent",
+        posterPath: "/placeholder.svg",
+        description:
+          "In the 1970s, merciless killer Charles Sobhraj preys on travelers exploring the 'hippie trail' of South Asia. Based on shocking true events.",
+        releaseYear: 2021,
+        duration: "Limited Series",
+        genre: "Crime",
+      },
+      {
+        id: 18,
+        title: "Behind Her Eyes",
+        posterPath: "/placeholder.svg",
+        description:
+          "A single mother enters a world of twisted mind games when she begins an affair with her psychiatrist boss while secretly befriending his mysterious wife.",
+        releaseYear: 2021,
+        duration: "Limited Series",
+        genre: "Psychological Thriller",
+      },
+    ],
+  },
+  {
+    title: "Hulu",
+    movies: [
+      {
+        id: 123213,
         title: "Shadow and Bone",
         posterPath: "/placeholder.svg",
         description:
@@ -206,38 +467,32 @@ const categories = [
 
 export default function Home() {
   return (
-    <>
+    <div className="min-h-screen bg-black text-white">
+      <Header />
 
-      <div className="min-h-screen bg-black text-white relative">
-        {/* Header with higher z-index to stay on top */}
-        <Header className="fixed top-0 left-0 right-0 z-50" />
-        <Hero
-          title_eng="Example Title ENG"
-          title_geo="Example Title GEO"
-          description_eng="Example Description ENG"
-          description_geo="Example Description GEO"
-          imagePath="/example-image-path.jpg"
-        />
+      <Hero
+        title_eng="Samurai Jack"
+        title_geo="Example Title GEO"
+        description_eng="Example Description ENG"
+        description_geo="Example Description GEO"
+        imagePath="/example-image-path.jpg"
+      />
 
-        {/* Main content with padding-top to account for fixed header */}
-        <main className="relative pt-16 container mx-auto px-4 pb-8">
-          <StreamingServices />
-          <ContentTypeSwitcher />
-          <div className="-mx-4 relative z-0">
-            {categories.map((category, index) => (
-              <MovieRow
-                key={index}
-                title={category.title}
-                movies={category.movies}
-              />
-            ))}
-          </div>
-        </main>
+      <main className="relative z-10 px-4 lg:px-12">
+        <StreamingServices />
+        <ContentTypeSwitcher />
+        <div className="relative">
+          {categories.map((category, index) => (
+            <MovieRow
+              key={index}
+              title={category.title}
+              movies={category.movies}
+            />
+          ))}
+        </div>
+      </main>
 
-        {/* Footer at the bottom */}
-        <Footer />
-      </div>
-    </>
+      <Footer />
+    </div>
   )
 }
-

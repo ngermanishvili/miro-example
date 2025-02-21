@@ -8,6 +8,8 @@ const nextConfig = {
       "cdn.smartv.cc",
       "image.tmdb.org",
       "static.moviege.com",
+      "occ-0-5515-2774.1.nflxso.net",
+
 
     ],
 

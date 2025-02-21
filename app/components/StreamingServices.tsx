@@ -13,7 +13,7 @@ interface StreamingServicesProps {
 
 export default function StreamingServices({ className = "" }: StreamingServicesProps) {
   return (
-    <div className="py-8">
+    <div className="py-8 ">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Popular Services</h2>
         <a href="#" className="text-sm text-gray-400 hover:text-white">
