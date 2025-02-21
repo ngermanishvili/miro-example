@@ -1,26 +1,27 @@
-// File: app/api/tv-full/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
 const pool = new Pool({
     connectionString: process.env.POSTGRES_URL,
     ssl: {
-        rejectUnauthorized: false
-    }
+        rejectUnauthorized: false,
+    },
 });
 
+// Dynamic route handler for GET requests
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
-    if (!params.id) {
+    // Await the params to extract the `id`
+    const { id } = await params;
+
+    if (!id) {
         return NextResponse.json(
             { error: 'TV series ID is required' },
             { status: 400 }
         );
     }
-
-    const id = params.id;
 
     try {
         const client = await pool.connect();
@@ -72,13 +73,12 @@ export async function GET(
                 genres: result.rows[0].genres || [],
                 cast_members: result.rows[0].cast_members || [],
                 production_companies: result.rows[0].production_companies || [],
-                episodes: result.rows[0].episodes || []
             };
 
             return NextResponse.json(show, {
                 headers: {
-                    'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400'
-                }
+                    'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+                },
             });
 
         } catch (error) {
