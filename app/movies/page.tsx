@@ -3,6 +3,9 @@ import Hero from "../components/Hero"
 import MovieRow from "../components/MovieRow"
 import Footer from "../components/Footer"
 
+
+
+
 // Mock data for movie categories
 const categories = [
   {
@@ -44,11 +47,11 @@ export default function Movies() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Header />
-      <Hero
+      {/* <Hero
         title="Movies"
         subtitle="Discover the latest blockbusters and timeless classics"
         imagePath="/movies-hero.jpg"
-      />
+      /> */}
       <main className="container mx-auto px-4 pb-8">
         <h1 className="text-4xl font-bold my-8">Movies</h1>
         <div className="-mx-4">
