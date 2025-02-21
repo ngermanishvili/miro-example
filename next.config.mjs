@@ -10,6 +10,7 @@ const nextConfig = {
       "static.moviege.com",
 
     ],
+
   },
 };
 
