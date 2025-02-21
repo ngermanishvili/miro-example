@@ -24,7 +24,7 @@ const HeroInfo: React.FC<HeroInfoProps> = ({
     return (
         <div className="relative w-full sm:w-3/4 md:w-2/3 lg:w-[1200px] h-full flex items-center pl-4 sm:pl-8 md:pl-12 lg:pl-[40px]">
             {/* Gradient Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black from-40% via-black/15 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black from-40% via-black/151 to-transparent" />
 
             {/* Content */}
             <div className="relative z-10 p-4 sm:p-6 md:p-8 space-y-3 sm:space-y-4 md:space-y-6">

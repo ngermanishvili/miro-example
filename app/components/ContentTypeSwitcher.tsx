@@ -22,7 +22,7 @@ export default function ContentTypeSwitcher({ onTypeChange, initialType = "movie
       <div className="bg-gray-800 p-1 rounded-full flex">
         <button
           onClick={() => handleTypeChange("movies")}
-          className={`flex items-center px-4 py-2 rounded-full transition-all ${activeType === "movies" ? "bg-red-600 text-white" : "text-gray-300 hover:text-white"
+          className={`flex items-center px-4 py-2 rounded-full transition-all ${activeType === "movies" ? "bg-[#42D791] text-white" : "text-gray-300 hover:text-white"
             }`}
         >
           <FilmIcon className="w-5 h-5 mr-2" />
@@ -30,7 +30,7 @@ export default function ContentTypeSwitcher({ onTypeChange, initialType = "movie
         </button>
         <button
           onClick={() => handleTypeChange("tvshows")}
-          className={`flex items-center px-4 py-2 rounded-full transition-all ${activeType === "tvshows" ? "bg-red-600 text-white" : "text-gray-300 hover:text-white"
+          className={`flex items-center px-4 py-2 rounded-full transition-all ${activeType === "tvshows" ? "bg-[#42D791] text-white" : "text-gray-300 hover:text-white"
             }`}
         >
           <TvIcon className="w-5 h-5 mr-2" />
