@@ -4,10 +4,10 @@ const SplitContainer = () => {
     const measurements = Array(6).fill("Living Room.............. 47 sqm.");
 
     return (
-        <div className="min-h-screen w-full lg:px-8 xl:px-20 md:px-6 px-4 mt-[100px]">
+        <div className="w-full lg:px-8 xl:px-20 md:px-6 pt-24">
             <div className="max-w-8xl mx-auto flex flex-col lg:flex-row lg:justify-between">
                 {/* Left Panel - Scrollable */}
-                <div className="lg:w-1/2 w-full">
+                <div className="lg:w-1/2 w-full lg:h-[1400px] lg:overflow-y-auto">
                     <div className="pt-20 lg:pr-8 space-y-8">
                         {/* Header Section */}
                         <div className="space-y-6">
@@ -104,9 +104,9 @@ const SplitContainer = () => {
                     </div>
                 </div>
 
-                {/* Right Panel - Fixed */}
-                <div className="lg:w-1/2 w-full lg:sticky lg:top-0 lg:h-screen">
-                    <div className="pt-20 space-y-8 lg:overflow-y-auto lg:h-full">
+                {/* Right Panel - Height matches content */}
+                <div className="lg:w-1/2 w-full">
+                    <div className="pt-20 space-y-8">
                         <img src="/assets/p1.png" alt="Exterior View 1" className="w-full rounded-lg shadow-md transition-transform duration-300 hover:scale-[1.02]" />
                         <img src="/assets/p2.png" alt="Exterior View 2" className="w-full rounded-lg shadow-md transition-transform duration-300 hover:scale-[1.02]" />
                         <img src="/assets/p3.png" alt="Pool View" className="w-full rounded-lg shadow-md transition-transform duration-300 hover:scale-[1.02]" />

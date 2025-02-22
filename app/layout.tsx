@@ -30,16 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header
-          menuLinks={[
-            { label: 'Projects', href: '/projects' },
-            { label: 'About', href: '#about' },
-            { label: 'Services', href: '/services' },
-            { label: 'Partners', href: '/partners' },
-            { label: 'Contact', href: '#contact' },
-            { label: 'Geo', href: '#geo' },
-          ]}
-        />
+        <Header />
         {children}
         <Footer />
       </body>

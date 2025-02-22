@@ -52,7 +52,7 @@ const ServicesSection: React.FC = () => {
     };
 
     return (
-        <section className="w-full max-w-7xl mx-auto px-4 py-16 md:py-24">
+        <section className="w-full max-w-7xl mx-auto px-4 py-16 md:py-24 ">
             <div className="flex flex-col items-center space-y-16">
                 {/* Image Container */}
                 <div className="max-w-full h-[500px] w-[500px] mt-12 aspect-square relative rounded-2xl overflow-hidden shadow-xl">
