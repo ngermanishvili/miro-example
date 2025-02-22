@@ -10,7 +10,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Next.js PDF Replica</title>
+        <title>Miro Template</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -24,14 +24,14 @@ const Home: NextPage = () => {
           {
             src: '/assets/1.png',
             alt: 'Project 1 Description',
-            title: 'Project 1 Title', // დავამატეთ title
-            subtitle: 'Project 1 Subtitle' // დავამატეთ subtitle
+            title: 'Creek townhouse interior', // დავამატეთ title
+            subtitle: 'Dubai' // დავამატეთ subtitle
           },
           {
             src: '/assets/2.png',
             alt: 'Project 2 Description',
-            title: 'Project 2 Title',
-            subtitle: 'Project 2 Subtitle'
+            title: 'Floating Villa ',
+            subtitle: 'Dubai'
           },
           {
             src: '/assets/3.png',

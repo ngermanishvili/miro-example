@@ -21,10 +21,14 @@ const ContentSection = ({
     images,
 }: ContentSectionProps) => (
     <section id={id} className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl mb-4 font-bold text-gray-900">{title}</h2>
-        {subtitle && (
-            <h3 className="text-xl text-gray-600 mb-8">{subtitle}</h3>
-        )}
+        <div className="flex justify-end mb-8">
+            <div className="text-right">
+                <h2 className="text-3xl mb-4 font-bold text-gray-900">{title}</h2>
+                {subtitle && (
+                    <h3 className="text-xl text-gray-600">{subtitle}</h3>
+                )}
+            </div>
+        </div>
         {images && (
             <div className="flex flex-col gap-16">
                 {/* First row */}
@@ -42,7 +46,7 @@ const ContentSection = ({
                                     className="w-full h-full"
                                 />
                             </div>
-                            <div className="text-center">
+                            <div className="text-start">
                                 <h4 className="text-lg font-semibold text-gray-800">{image.title}</h4>
                                 <p className="text-gray-600 mt-2">{image.subtitle}</p>
                             </div>
@@ -86,7 +90,7 @@ const ContentSection = ({
                                     className="w-full h-full"
                                 />
                             </div>
-                            <div className="text-center">
+                            <div className="items-center">
                                 <h4 className="text-lg font-semibold text-gray-800">{image.title}</h4>
                                 <p className="text-gray-600 mt-2">{image.subtitle}</p>
                             </div>
