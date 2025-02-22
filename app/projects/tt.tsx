@@ -4,10 +4,10 @@ const SplitContainer = () => {
     const measurements = Array(6).fill("Living Room.............. 47 sqm.");
 
     return (
-        <div className="h-screen w-full flex mt-24">
-            {/* Left Panel */}
-            <div className="w-1/2 h-full border-r border-gray-200 overflow-y-auto ">
-                <div className="p-8">
+        <div className="w-full lg:px-8 xl:px-20 md:px-6 pt-24">
+            <div className="max-w-8xl mx-auto flex flex-col lg:flex-row lg:justify-between">
+                {/* Left Panel - Scrollable */}
+                <div className="lg:w-1/2 w-full lg:h-[1400px] lg:overflow-y-auto">
                     <div className="pt-20 lg:pr-8 space-y-8">
                         {/* Header Section */}
                         <div className="space-y-6">
@@ -68,7 +68,7 @@ const SplitContainer = () => {
                             {/* Ground Floor */}
                             <div className="space-y-6">
                                 <h3 className="font-semibold">Ground Floor</h3>
-                                <img src="/assets/r1.png" alt="Ground Floor Plan" className="w-full rounded-lg shadow-md" />
+                                <img src="/api/placeholder/800/600" alt="Ground Floor Plan" className="w-full rounded-lg shadow-md" />
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
@@ -87,7 +87,7 @@ const SplitContainer = () => {
                             {/* First Floor */}
                             <div className="space-y-6 pb-8">
                                 <h3 className="font-semibold">First Floor</h3>
-                                <img src="/assets/r2.png" alt="Ground Floor Plan" className="w-full rounded-lg shadow-md" />
+                                <img src="/api/placeholder/800/600" alt="First Floor Plan" className="w-full rounded-lg shadow-md" />
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
@@ -104,21 +104,17 @@ const SplitContainer = () => {
                             </div>
                         </div>
                     </div>
-
-
                 </div>
-            </div>
 
-            {/* Right Panel */}
-            <div className="w-1/2 h-full overflow-y-auto">
-                <div className="p-8 space-y-8">
-                    <img src="/assets/p1.png" alt="Exterior View 1" className="w-full rounded-lg shadow-md" />
-                    <img src="/assets/p2.png" alt="Exterior View 2" className="w-full rounded-lg shadow-md" />
-                    <img src="/assets/p3.png" alt="Pool View 2" className="w-full rounded-lg shadow-md" />
-                    <img src="/assets/p4.png" alt="Pool View 3 " className="w-full rounded-lg shadow-md" />
-                    <img src="/assets/p5.png" alt="Pool View 4" className="w-full rounded-lg shadow-md" />
-
-
+                {/* Right Panel - Height matches content */}
+                <div className="lg:w-1/2 w-full">
+                    <div className="pt-20 space-y-8">
+                        <img src="/api/placeholder/800/600" alt="Exterior View 1" className="w-full rounded-lg shadow-md transition-transform duration-300 hover:scale-[1.02]" />
+                        <img src="/api/placeholder/800/600" alt="Exterior View 2" className="w-full rounded-lg shadow-md transition-transform duration-300 hover:scale-[1.02]" />
+                        <img src="/api/placeholder/800/600" alt="Pool View" className="w-full rounded-lg shadow-md transition-transform duration-300 hover:scale-[1.02]" />
+                        <img src="/api/placeholder/800/600" alt="Pool View" className="w-full rounded-lg shadow-md transition-transform duration-300 hover:scale-[1.02]" />
+                        <img src="/api/placeholder/800/600" alt="Pool View" className="w-full rounded-lg shadow-md transition-transform duration-300 hover:scale-[1.02]" />
+                    </div>
                 </div>
             </div>
         </div>
