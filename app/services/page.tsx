@@ -135,7 +135,7 @@ export default function ServicesPage() {
                                     transition-all duration-300 ease-out
                                     ${index === activeIndex
                                         ? 'text-black opacity-100 transform scale-105'
-                                        : 'text-gray-300 opacity-90 hover:text-blue-800 hover:opacity-100'
+                                        : 'text-gray-300 opacity-90 hover:text-black hover:opacity-100'
                                     }
                                 `}
                             >
