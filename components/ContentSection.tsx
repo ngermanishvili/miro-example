@@ -68,7 +68,7 @@ const ContentSection = ({
                                     className="w-full h-full"
                                 />
                             </div>
-                            <div className="text-center">
+                            <div className="text-start">
                                 <h4 className="text-lg font-semibold text-gray-800">{image.title}</h4>
                                 <p className="text-gray-600 mt-2">{image.subtitle}</p>
                             </div>
