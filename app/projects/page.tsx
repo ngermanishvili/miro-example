@@ -110,7 +110,7 @@ const SplitContainer = () => {
             </div>
 
             {/* Right Panel */}
-            <div className="w-1/2 h-full overflow-y-auto">
+            <div className="w-1/2 h-full overflow-y-auto mt-4">
                 <div className="p-8 space-y-8">
                     <img src="/assets/p1.png" alt="Exterior View 1" className="w-full rounded-lg shadow-md" />
                     <img src="/assets/p2.png" alt="Exterior View 2" className="w-full rounded-lg shadow-md" />
