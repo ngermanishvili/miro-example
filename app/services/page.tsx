@@ -6,10 +6,6 @@ interface Service {
     description: string;
 }
 
-interface ServicesContainerProps {
-    className?: string;
-}
-
 const services: Service[] = [
     {
         title: "Building permit documentation",
@@ -41,7 +37,7 @@ const services: Service[] = [
     }
 ];
 
-const ServicesContainer: React.FC<ServicesContainerProps> = ({ className = '' }) => {
+export default function ServicesPage() {
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -114,9 +110,9 @@ const ServicesContainer: React.FC<ServicesContainerProps> = ({ className = '' })
             {/* Services Container */}
             <div
                 ref={containerRef}
-                className={`flex h-96 w-full bg-gray-500 shadow-xl rounded-2xl overflow-hidden border border-gray-100 ${className}`}
+                className="flex h-96 w-full bg-gray-500 shadow-xl rounded-2xl overflow-hidden border border-gray-100"
             >
-                {/* სერვისების სია */}
+                {/* Services List */}
                 <div className="w-1/2 pr-6 py-4 space-y-2 bg-blue-100">
                     {services.map((service, index) => (
                         <div
@@ -149,7 +145,7 @@ const ServicesContainer: React.FC<ServicesContainerProps> = ({ className = '' })
                     ))}
                 </div>
 
-                {/* სერვისის აღწერა */}
+                {/* Service Description */}
                 <div className="w-1/2 p-8 bg-white">
                     <div className="sticky top-8">
                         <div
@@ -170,6 +166,4 @@ const ServicesContainer: React.FC<ServicesContainerProps> = ({ className = '' })
             </div>
         </div>
     );
-};
-
-export default ServicesContainer;
+}
