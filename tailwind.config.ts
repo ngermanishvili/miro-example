@@ -20,6 +20,21 @@ const config: Config = {
 		},
 		extend: {
 			colors: {
+				'netflix-red': '#E50914',
+				'netflix-darkred': '#B20710',
+				// Disney+ colors
+				'disney-blue': '#113CCF',
+				'disney-darkblue': '#0D2E9E',
+				// HBO colors
+				'hbo-teal': '#00B3FF',
+				'hbo-darkteal': '#008FCC',
+				// Paramount+ colors
+				'paramount-blue': '#0066CC',
+				'paramount-darkblue': '#004C99',
+				// Amazon Prime colors
+				'amazon-teal': '#00A8E1',
+				'amazon-darkteal': '#0085B2',
+
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				border: 'hsl(var(--border))',

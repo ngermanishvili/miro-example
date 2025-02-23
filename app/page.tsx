@@ -23,11 +23,8 @@ export default function Home() {
 
       <main className="relative z-10 px-4 lg:px-12">
         <ContentTypeSwitcher />
-
-        {/* Add the TVShows component here */}
         <TVShowsMainPage />
       </main>
-
       <Footer />
     </div>
   );
