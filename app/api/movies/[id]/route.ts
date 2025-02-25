@@ -9,10 +9,11 @@ const pool = new Pool({
 // Fixed type definition for the GET handler
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const id = params.id;
+        // Awaiting params to get the movie ID
+        const { id } = await params;
 
         if (!id) {
             return NextResponse.json(
@@ -46,7 +47,6 @@ export async function GET(
             const movie = result.rows[0];
 
             // Fetch additional movie data (like production companies, etc.) if needed
-            // Example:
             const companiesQuery = `
                 SELECT 
                     pc.id,
