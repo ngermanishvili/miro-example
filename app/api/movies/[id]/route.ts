@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
 const pool = new Pool({
@@ -6,9 +6,9 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
-// Fix the GET function signature to match Next.js App Router expectations
+// Fixed type definition for the GET handler
 export async function GET(
-    request: Request,
+    request: NextRequest,
     { params }: { params: { id: string } }
 ) {
     try {

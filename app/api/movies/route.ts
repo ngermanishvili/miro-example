@@ -104,7 +104,10 @@ export async function GET(request: Request) {
             limit,
             hasMore: movies.length >= limit
         }, {
-            headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' }
+            headers: {
+                'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+
+            }
         });
     } catch (error) {
         console.error('Database error:', error);
