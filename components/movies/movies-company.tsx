@@ -36,42 +36,42 @@ const STREAMING_PLATFORMS = [
         id: "netflix",
         name: "Netflix",
         platform: "netflix",
-        logo: "/assets/production-companoes/netflix.png",
+        logo: "/assets/production-companies/netflix.png",
         colorClass: "bg-gradient-to-r from-red-600 to-red-800"
     },
     {
         id: "amazon",
         name: "Amazon Prime",
         platform: "amazon",
-        logo: "/assets/production-companoes/netflix.png",
+        logo: "/assets/production-companies/netflix.png",
         colorClass: "bg-gradient-to-r from-blue-500 to-blue-700"
     },
     {
         id: "paramountplus",
         name: "Paramount+",
         platform: "paramountplus",
-        logo: "/assets/production-companoes/netflix.png",
+        logo: "/assets/production-companies/netflix.png",
         colorClass: "bg-gradient-to-r from-blue-600 to-blue-900"
     },
     {
         id: "disney",
         name: "Disney+",
         platform: "disney",
-        logo: "/assets/production-companoes/netflix.png",
+        logo: "/assets/production-companies/netflix.png",
         colorClass: "bg-gradient-to-r from-blue-800 to-indigo-800"
     },
     {
         id: "sonypictures",
         name: "Sony Pictures",
         platform: "sonypictures",
-        logo: "/assets/production-companoes/netflix.png",
+        logo: "/assets/production-companies/netflix.png",
         colorClass: "bg-gradient-to-r from-blue-600 to-blue-800"
     },
     {
         id: "universal",
         name: "Universal",
         platform: "universal",
-        logo: "/assets/production-companoes/netflix.png",
+        logo: "/assets/production-companies/netflix.png",
         colorClass: "bg-gradient-to-r from-gray-700 to-gray-900"
     }
 ];
