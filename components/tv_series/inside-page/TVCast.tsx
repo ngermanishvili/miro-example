@@ -11,7 +11,7 @@ interface CastListProps {
     cast: CastMember[];
 }
 
-const CastList: FC<CastListProps> = ({ cast }) => {
+const TVCast: FC<CastListProps> = ({ cast }) => {
     return (
         <div className="space-y-4">
             <h2 className="text-2xl font-semibold">Cast</h2>
@@ -37,4 +37,4 @@ const CastList: FC<CastListProps> = ({ cast }) => {
     );
 };
 
-export default CastList;
+export default TVCast;

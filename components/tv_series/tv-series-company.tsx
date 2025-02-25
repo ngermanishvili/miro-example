@@ -1,33 +1,33 @@
-// components/movies/movies-company.tsx
+// components/tv-series/tv-series-company.tsx
 "use client";
 
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
-import MovieCard from './MovieCard';
+import TVShowCard from './TVShowCard';
 import useSWRInfinite from 'swr/infinite';
 
-interface Movie {
+interface TVShow {
     id: number;
     title_geo: string;
     title_eng: string;
-    imdb_vote: number;
+    imdb_vote: number | null;
     backdrop_poster_url: string | null;
     backdrop_path_tmdb: string | null;
-    release_date: string;
-    homepage_url: string;
+    release_date: string | null;
+    homepage_url: string | null;
     poster_logo?: { logo_path: string } | null;
 }
 
-interface MoviesApiResponse {
-    movies: Movie[];
+interface TVShowsApiResponse {
+    series: TVShow[];
     page: number;
     limit: number;
     hasMore: boolean;
 }
 
-const MOVIES_PER_ROW = 8;
+const SHOWS_PER_ROW = 8;
 const INITIAL_ROWS = 2; // 2 მწკრივი ფილტრაციისას
 
 // სტრიმინგ პლატფორმების კონფიგურაცია
@@ -36,42 +36,42 @@ const STREAMING_PLATFORMS = [
         id: "netflix",
         name: "Netflix",
         platform: "netflix",
-        logo: "/logos/netflix.svg",
+        logo: "/assets/platforms/netflix.png",
         colorClass: "bg-gradient-to-r from-red-600 to-red-800"
     },
     {
         id: "amazon",
         name: "Amazon Prime",
         platform: "amazon",
-        logo: "/logos/amazon-prime.svg",
+        logo: "/assets/platforms/amazon.png",
         colorClass: "bg-gradient-to-r from-blue-500 to-blue-700"
     },
     {
-        id: "paramountplus",
-        name: "Paramount+",
-        platform: "paramountplus",
-        logo: "/logos/paramount-plus.svg",
-        colorClass: "bg-gradient-to-r from-blue-600 to-blue-900"
+        id: "hbo",
+        name: "HBO Max",
+        platform: "hbo",
+        logo: "/assets/platforms/hbo.png",
+        colorClass: "bg-gradient-to-r from-teal-600 to-teal-900"
     },
     {
-        id: "disney",
+        id: "disneyplus",
         name: "Disney+",
-        platform: "disney",
-        logo: "/logos/disney-plus.svg",
+        platform: "disneyplus",
+        logo: "/assets/platforms/disney.png",
         colorClass: "bg-gradient-to-r from-blue-800 to-indigo-800"
     },
     {
-        id: "sonypictures",
-        name: "Sony Pictures",
-        platform: "sonypictures",
-        logo: "/logos/sony-pictures.svg",
-        colorClass: "bg-gradient-to-r from-blue-600 to-blue-800"
+        id: "paramount",
+        name: "Paramount+",
+        platform: "paramount",
+        logo: "/assets/platforms/paramount.png",
+        colorClass: "bg-gradient-to-r from-blue-600 to-blue-900"
     },
     {
-        id: "universal",
-        name: "Universal",
-        platform: "universal",
-        logo: "/logos/universal.svg",
+        id: "appletv",
+        name: "Apple TV+",
+        platform: "appletv",
+        logo: "/assets/platforms/appletv.png",
         colorClass: "bg-gradient-to-r from-gray-700 to-gray-900"
     }
 ];
@@ -79,14 +79,14 @@ const STREAMING_PLATFORMS = [
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const getKey = (platform: string, isFiltered: boolean) =>
-    (pageIndex: number, previousPageData: MoviesApiResponse | null) => {
+    (pageIndex: number, previousPageData: TVShowsApiResponse | null) => {
         if (previousPageData && !previousPageData.hasMore) return null;
-        // ფილტრაციისას უფრო მეტი ფილმის ჩატვირთვა
-        const limit = isFiltered ? MOVIES_PER_ROW * INITIAL_ROWS : MOVIES_PER_ROW;
-        return `/api/movies?page=${pageIndex + 1}&limit=${limit}&platform=${platform}`;
+        // ფილტრაციისას უფრო მეტი სერიალის ჩატვირთვა
+        const limit = isFiltered ? SHOWS_PER_ROW * INITIAL_ROWS : SHOWS_PER_ROW;
+        return `/api/tv-series?page=${pageIndex + 1}&limit=${limit}&platform=${platform}`;
     };
 
-const MoviesMainPage: React.FC = () => {
+const TVShowsMainPage: React.FC = () => {
     const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
 
     const handlePlatformSelect = (platformId: string) => {
@@ -110,7 +110,7 @@ const MoviesMainPage: React.FC = () => {
                             className={`
                 relative overflow-hidden rounded-lg shadow-md transition-all duration-300 
                 ${selectedPlatform === platform.id
-                                    ? 'ring-2 ring-red-500 scale-105 z-10'
+                                    ? 'ring-2 ring-purple-500 scale-105 z-10'
                                     : 'hover:scale-102 hover:bg-gray-800'
                                 }
                 flex flex-col items-center justify-center p-3 bg-gray-800
@@ -127,14 +127,14 @@ const MoviesMainPage: React.FC = () => {
                             <span className="text-sm font-medium text-center">{platform.name}</span>
 
                             {selectedPlatform === platform.id && (
-                                <div className="absolute bottom-0 left-0 w-full h-1 bg-red-500"></div>
+                                <div className="absolute bottom-0 left-0 w-full h-1 bg-purple-500"></div>
                             )}
                         </button>
                     ))}
                 </div>
             </div>
 
-            {/* არჩეული პლატფორმის ფილმების სექცია */}
+            {/* არჩეული პლატფორმის სერიალების სექცია */}
             {selectedPlatform ? (
                 <StreamingSection key={selectedPlatform} platform={selectedPlatform} isFiltered={true} />
             ) : (
@@ -154,7 +154,7 @@ function StreamingSection({ platform, isFiltered }: { platform: string, isFilter
     const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
     const [visibleRows, setVisibleRows] = useState(isFiltered ? INITIAL_ROWS : 1);
 
-    const { data, error, size, setSize } = useSWRInfinite<MoviesApiResponse>(
+    const { data, error, size, setSize } = useSWRInfinite<TVShowsApiResponse>(
         (pageIndex, previousPageData) => getKey(platform, isFiltered)(pageIndex, previousPageData),
         fetcher,
         { revalidateFirstPage: false, revalidateOnFocus: false }
@@ -171,20 +171,20 @@ function StreamingSection({ platform, isFiltered }: { platform: string, isFilter
         }
     };
 
-    const allMovies = data?.flatMap(page => page.movies) || [];
+    const allShows = data?.flatMap(page => page.series) || [];
     const isLoading = !data && !error;
     const hasMore = data?.[data.length - 1]?.hasMore || false;
     const platformInfo = STREAMING_PLATFORMS.find(p => p.id === platform)!;
 
-    // ფილმების მწკრივებად დაყოფა
-    const movieRows: Movie[][] = [];
+    // სერიალების მწკრივებად დაყოფა
+    const seriesRows: TVShow[][] = [];
     for (let i = 0; i < visibleRows; i++) {
-        const startIndex = i * MOVIES_PER_ROW;
-        const endIndex = startIndex + MOVIES_PER_ROW;
-        const rowMovies = allMovies.slice(startIndex, endIndex);
+        const startIndex = i * SHOWS_PER_ROW;
+        const endIndex = startIndex + SHOWS_PER_ROW;
+        const rowShows = allShows.slice(startIndex, endIndex);
 
-        if (rowMovies.length > 0 || isLoading) {
-            movieRows.push(rowMovies);
+        if (rowShows.length > 0 || isLoading) {
+            seriesRows.push(rowShows);
         }
     }
 
@@ -197,7 +197,7 @@ function StreamingSection({ platform, isFiltered }: { platform: string, isFilter
     };
 
     // თუ მონაცემები ცარიელია და არ ტვირთავს, არ აჩვენო სექცია
-    if (!isLoading && (!allMovies || allMovies.length === 0)) {
+    if (!isLoading && (!allShows || allShows.length === 0)) {
         return null;
     }
 
@@ -208,21 +208,21 @@ function StreamingSection({ platform, isFiltered }: { platform: string, isFilter
                     <div className={`w-1 h-12 ${platformInfo.colorClass} mr-3`}></div>
                     <div>
                         <h2 className="text-2xl font-bold">{platformInfo.name}</h2>
-                        <p className="text-gray-400 text-sm">პოპულარული ფილმები</p>
+                        <p className="text-gray-400 text-sm">პოპულარული სერიალები</p>
                     </div>
                 </div>
 
-                {/* ფილმების მწკრივები */}
-                {movieRows.map((rowMovies, rowIndex) => (
+                {/* სერიალების მწკრივები */}
+                {seriesRows.map((rowShows, rowIndex) => (
                     <div key={`row-${rowIndex}`} className="relative px-2 mb-8 group/row">
                         <div
                             ref={el => { rowRefs.current[rowIndex] = el; }}
                             className="flex space-x-4 overflow-x-auto pb-6 scrollbar-hide snap-x"
                         >
-                            {rowMovies.length > 0 ? (
-                                // ფილმების ქარდები
-                                rowMovies.map((movie) => (
-                                    <MovieCard key={movie.id} movie={movie} />
+                            {rowShows.length > 0 ? (
+                                // სერიალების ქარდები
+                                rowShows.map((show) => (
+                                    <TVShowCard key={show.id} show={show} />
                                 ))
                             ) : isLoading ? (
                                 // ჩატვირთვის ანიმაცია
@@ -234,12 +234,12 @@ function StreamingSection({ platform, isFiltered }: { platform: string, isFilter
                                 ))
                             ) : (
                                 <div className="text-center py-10 text-gray-400 w-full">
-                                    {platformInfo.name}-ის ფილმები ვერ მოიძებნა
+                                    {platformInfo.name}-ის სერიალები ვერ მოიძებნა
                                 </div>
                             )}
 
                             {/* მეტის ჩვენების ღილაკი ბოლო მწკრივში */}
-                            {rowIndex === movieRows.length - 1 && hasMore && (
+                            {rowIndex === seriesRows.length - 1 && hasMore && (
                                 <div className="flex-none w-[250px] snap-start">
                                     <button
                                         onClick={loadMore}
@@ -252,7 +252,7 @@ function StreamingSection({ platform, isFiltered }: { platform: string, isFilter
                         </div>
 
                         {/* ნავიგაციის ღილაკები */}
-                        {rowMovies.length > 0 && (
+                        {rowShows.length > 0 && (
                             <>
                                 <button
                                     onClick={() => scroll('left', rowIndex)}
@@ -276,13 +276,13 @@ function StreamingSection({ platform, isFiltered }: { platform: string, isFilter
                 ))}
 
                 {/* მეტის ჩვენების ღილაკი მთელი სექციისთვის (ოფციონალური) */}
-                {isFiltered && hasMore && movieRows.length >= INITIAL_ROWS && (
+                {isFiltered && hasMore && seriesRows.length >= INITIAL_ROWS && (
                     <div className="flex justify-center mt-4 mb-8">
                         <button
                             onClick={loadMore}
                             className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white py-2 px-6 rounded-md transition-colors"
                         >
-                            <span>მეტი ფილმის ნახვა</span>
+                            <span>მეტი სერიალის ნახვა</span>
                             <ChevronDown className="w-4 h-4" />
                         </button>
                     </div>
@@ -292,4 +292,4 @@ function StreamingSection({ platform, isFiltered }: { platform: string, isFilter
     );
 }
 
-export default MoviesMainPage;
+export default TVShowsMainPage;

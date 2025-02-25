@@ -1,4 +1,4 @@
-// components/movies/PlatformFilter.tsx
+// components/tv-series/TVPlatformFilter.tsx
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -14,15 +14,15 @@ interface Platform {
     platform_id: string;
     platform_name: string;
     display_name: string;
-    movie_count: number;
+    series_count: number;
 }
 
-interface PlatformFilterProps {
+interface TVPlatformFilterProps {
     selectedPlatform: string;
     onPlatformChange: (platform: string) => void;
 }
 
-const PlatformFilter: React.FC<PlatformFilterProps> = ({
+const TVPlatformFilter: React.FC<TVPlatformFilterProps> = ({
     selectedPlatform,
     onPlatformChange
 }) => {
@@ -34,7 +34,7 @@ const PlatformFilter: React.FC<PlatformFilterProps> = ({
         const fetchPlatforms = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('/api/platforms');
+                const response = await fetch('/api/tv-platforms');
 
                 if (response.ok) {
                     const data = await response.json();
@@ -59,32 +59,32 @@ const PlatformFilter: React.FC<PlatformFilterProps> = ({
         {
             id: 'netflix',
             name: 'Netflix',
-            logoPath: '/assets/production-companies/netflix.png',
+            logoPath: '/assets/platforms/netflix.png',
         },
         {
             id: 'amazon',
             name: 'Amazon Prime',
-            logoPath: '/assets/production-companies/amazon.png',
+            logoPath: '/assets/platforms/amazon.png',
         },
         {
-            id: 'paramountplus',
-            name: 'Paramount+',
-            logoPath: '/assets/production-companies/prime-video.png',
+            id: 'hbo',
+            name: 'HBO Max',
+            logoPath: '/assets/platforms/hbo.png',
         },
         {
-            id: 'disney',
+            id: 'disneyplus',
             name: 'Disney+',
-            logoPath: '/assets/production-companies/disney.png',
+            logoPath: '/assets/platforms/disney.png',
         },
         {
-            id: 'sonypictures',
-            name: 'Sony Pictures',
-            logoPath: '/assets/production-companies/sony.png',
+            id: 'paramount',
+            name: 'Paramount+',
+            logoPath: '/assets/platforms/paramount.png',
         },
         {
-            id: 'universal',
-            name: 'Universal',
-            logoPath: '/assets/production-companies/universal.png',
+            id: 'appletv',
+            name: 'Apple TV+',
+            logoPath: '/assets/platforms/appletv.png',
         }
     ];
 
@@ -123,7 +123,7 @@ const PlatformFilter: React.FC<PlatformFilterProps> = ({
                         className={`
                             relative overflow-hidden rounded-lg shadow-md transition-all duration-300
                             ${selectedPlatform === platform.id
-                                ? 'ring-2 ring-red-500 scale-105 z-10'
+                                ? 'ring-2 ring-purple-500 scale-105 z-10'
                                 : 'hover:scale-105 hover:bg-gray-700'
                             }
                             flex flex-col items-center justify-center p-3 bg-gray-800
@@ -145,7 +145,7 @@ const PlatformFilter: React.FC<PlatformFilterProps> = ({
                         <span className="text-xs font-medium text-center line-clamp-2">{platform.name}</span>
 
                         {selectedPlatform === platform.id && (
-                            <div className="absolute bottom-0 left-0 w-full h-1 bg-red-500"></div>
+                            <div className="absolute bottom-0 left-0 w-full h-1 bg-purple-500"></div>
                         )}
                     </button>
                 ))}
@@ -154,4 +154,4 @@ const PlatformFilter: React.FC<PlatformFilterProps> = ({
     );
 };
 
-export default PlatformFilter;
+export default TVPlatformFilter;

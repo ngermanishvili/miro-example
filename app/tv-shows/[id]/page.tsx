@@ -7,9 +7,9 @@ import Image from "next/image";
 import { Play, Plus, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import VideoPlayer from '@/components/tv-series/VideoPlayerTV';
-import EpisodeList from '@/components/tv-series/EpisodeList';
-import CastList from "@/components/tv-series/CastList";
+import TVPlayer from '@/components/tv_series/inside-page/TVPlayer';
+import TVEpisodes from '@/components/tv_series/inside-page/TVEpisode';
+import TVCast from '@/components/tv_series/inside-page/TVCast';
 import type { TVShow, Episode } from "@/types/tv";
 
 export default function TVShowDetailPage() {
@@ -25,7 +25,7 @@ export default function TVShowDetailPage() {
         const fetchShow = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`/api/tv-full/${params.id}`);
+                const response = await fetch(`/api/tv-series/${params.id}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch show data');
                 }
@@ -138,7 +138,7 @@ export default function TVShowDetailPage() {
             <div className="container mx-auto px-4 py-8">
                 {/* Video Player Section */}
                 <div className="mb-8">
-                    <VideoPlayer
+                    <TVPlayer
                         videoUrl={selectedEpisode?.video_url || null}
                     />
                 </div>
@@ -156,7 +156,7 @@ export default function TVShowDetailPage() {
                 {/* Episodes Section */}
                 {show.episodes && show.episodes.length > 0 && (
                     <div className="mb-8">
-                        <EpisodeList
+                        <TVEpisodes
                             episodes={show.episodes}
                             onEpisodeSelect={handleEpisodeSelect}
                             selectedEpisode={selectedEpisode}

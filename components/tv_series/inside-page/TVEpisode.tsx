@@ -15,7 +15,7 @@ interface EpisodeListProps {
     selectedEpisode: Episode | null;
 }
 
-export default function EpisodeList({ episodes, onEpisodeSelect, selectedEpisode }: EpisodeListProps) {
+export default function TVEpisodes({ episodes, onEpisodeSelect, selectedEpisode }: EpisodeListProps) {
     // Group episodes by season
     const seasons = episodes.reduce((acc, episode) => {
         const season = acc.get(episode.season) || [];

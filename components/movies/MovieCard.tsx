@@ -29,8 +29,14 @@ const FALLBACK_IMAGE = '/placeholder.svg';
 const MovieCard: React.FC<MovieCardProps> = ({ movie, priority = false }) => {
     const router = useRouter();
 
-    // სურათის წყაროს ლოგიკა
+    // სურათის წყაროს ლოგიკა - პრიორიტეტი TMDB-ს 
     const [imgSrc, setImgSrc] = useState(() => {
+        // Always prioritize TMDB path if it exists
+        if (movie.backdrop_path_tmdb) {
+            return `https://image.tmdb.org/t/p/w300${movie.backdrop_path_tmdb}`;
+        }
+
+        // Only use backdrop_poster_url as fallback if TMDB is not available
         if (movie.backdrop_poster_url) {
             try {
                 const url = new URL(movie.backdrop_poster_url);
@@ -41,9 +47,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, priority = false }) => {
                 return FALLBACK_IMAGE;
             }
         }
-        if (movie.backdrop_path_tmdb) {
-            return `https://image.tmdb.org/t/p/w500${movie.backdrop_path_tmdb}`;
-        }
+
         return FALLBACK_IMAGE;
     });
 

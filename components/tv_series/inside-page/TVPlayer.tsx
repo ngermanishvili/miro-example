@@ -11,7 +11,7 @@ interface VideoPlayerProps {
     videoUrl: string | null;  // შევცვალეთ undefined -> null
 }
 
-export default function VideoPlayer({ videoUrl }: VideoPlayerProps) {
+export default function TVPlayer({ videoUrl }: VideoPlayerProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
