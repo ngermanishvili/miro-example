@@ -52,8 +52,6 @@ export default function Hero({
           imdbRating={imdbRating}
         />
       </div>
-
-      {/* Newsletter - now positioned absolutely within Hero */}
       <Newsletter />
 
       {/* Optional gradient overlay for better text visibility */}

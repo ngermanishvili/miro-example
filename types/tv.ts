@@ -74,4 +74,3 @@ export interface TVShowsApiResponse {
 }
 
 export type ContentType = 'movies' | 'tvshows';
-//
