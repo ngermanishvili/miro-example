@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
 const pool = new Pool({
@@ -6,38 +6,32 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
+// Fix the GET function signature to match Next.js App Router expectations
 export async function GET(
-    request: NextRequest,
+    request: Request,
     { params }: { params: { id: string } }
 ) {
-    const { id } = await params; // Await params
-
-    if (!id) {
-        return NextResponse.json(
-            { error: 'Movie ID is required' },
-            { status: 400 }
-        );
-    }
-
     try {
+        const id = params.id;
+
+        if (!id) {
+            return NextResponse.json(
+                { error: 'Movie ID is required' },
+                { status: 400 }
+            );
+        }
+
+        console.log(`Fetching movie with ID: ${id}`);
+
         const client = await pool.connect();
 
         try {
             const query = `
                 SELECT 
                     m.*,
-                    COALESCE(json_agg(DISTINCT jsonb_build_object(
-                        'id', cm.id,
-                        'name', cm.name,
-                        'profile_path', cm.profile_path,
-                        'character_name', mc.character_name,
-                        'order', mc.order
-                    )) FILTER (WHERE cm.id IS NOT NULL), '[]') as cast_members
-                FROM movies m
-                LEFT JOIN movie_cast mc ON m.id = mc.movie_id
-                LEFT JOIN cast_members cm ON cm.id = mc.cast_member_id
+                    (homepage::jsonb)->>'url' as homepage_url
+                FROM public.movies m
                 WHERE m.id = $1
-                GROUP BY m.id;
             `;
 
             const result = await client.query(query, [id]);
@@ -49,28 +43,34 @@ export async function GET(
                 );
             }
 
-            return NextResponse.json({
-                ...result.rows[0],
-                cast_members: result.rows[0].cast_members
-            }, {
-                headers: {
-                    'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
-                },
-            });
+            const movie = result.rows[0];
 
-        } catch (error) {
-            console.error('Query error:', error);
-            return NextResponse.json(
-                { error: 'Database query failed' },
-                { status: 500 }
-            );
+            // Fetch additional movie data (like production companies, etc.) if needed
+            // Example:
+            const companiesQuery = `
+                SELECT 
+                    pc.id,
+                    pc.name,
+                    pc.logo_path,
+                    pc.origin_country
+                FROM movie_production_companies mpc
+                JOIN production_companies pc ON mpc.company_id = pc.id
+                WHERE mpc.movie_id = $1
+            `;
+
+            const companiesResult = await client.query(companiesQuery, [id]);
+            movie.production_companies = companiesResult.rows;
+
+            return NextResponse.json(movie, {
+                headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' }
+            });
         } finally {
             client.release();
         }
     } catch (error) {
-        console.error('Database connection error:', error);
+        console.error('Database error:', error);
         return NextResponse.json(
-            { error: 'Database connection failed' },
+            { error: 'Internal Server Error' },
             { status: 500 }
         );
     }
