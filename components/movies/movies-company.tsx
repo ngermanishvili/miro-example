@@ -3,11 +3,13 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Star, Play, Plus } from 'lucide-react';
-import useSWRInfinite from 'swr/infinite';
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import useSWRInfinite from 'swr/infinite';
+import useSWR from 'swr';
+
 
 // Movie interface based on actual data structure
 interface Movie {
@@ -120,51 +122,51 @@ function MovieStreamingSection({
     const scrollRef = useRef<HTMLDivElement>(null);
     const [movies, setMovies] = useState<Movie[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
 
-    // Fetch all movies once then filter by URL pattern
+    // პირველი ცდა API-ს გავლით
+    const { data, error } = useSWR<MoviesApiResponse>(
+        `/api/movies?page=1&limit=${MOVIES_PER_SECTION}&companies=${companyId}&platform=${platform}`,
+        fetcher
+    );
+
+    // თუ API-დან ფილმები არ მოვიდა, ყველა ფილმი წამოვიღოთ და ლოკალურად გავფილტროთ
     useEffect(() => {
-        async function fetchMovies() {
-            try {
-                setIsLoading(true);
-
-                // First try company ID filtering (like TV shows)
-                const companyResponse = await fetch(
-                    `/api/movies?page=1&limit=${MOVIES_PER_SECTION}&companies=${companyId}&platform=${platform}`
-                );
-                const companyData = await companyResponse.json();
-                const companyMovies = companyData.movies || [];
-
-                if (companyMovies.length > 0) {
-                    console.log(`Found ${companyMovies.length} movies for ${serviceName} by company ID`);
-                    setMovies(companyMovies);
+        async function fetchAndFilterMovies() {
+            if (data) {
+                if (data.movies && data.movies.length > 0) {
+                    console.log(`Found ${data.movies.length} movies for ${serviceName} by API parameters`);
+                    setMovies(data.movies);
                     setIsLoading(false);
                     return;
                 }
 
-                // If no movies found by company ID, fetch all and filter by URL pattern
-                const response = await fetch(`/api/movies?page=1&limit=200`);
-                const data = await response.json();
-                const allMovies = data.movies || [];
+                // თუ API-დან ფილმები არ მოვიდა, ყველა ფილმი წამოვიღოთ და URL-ით გავფილტროთ
+                try {
+                    console.log(`No movies found by API parameters for ${serviceName}, trying URL pattern filtering`);
+                    const response = await fetch(`/api/movies?page=1&limit=200`);
+                    const allData = await response.json();
+                    const allMovies = allData.movies || [];
 
-                // Filter by URL pattern
-                const filteredMovies = allMovies.filter((movie: { homepage_url: string; }) => {
-                    const url = movie.homepage_url || "";
-                    return url.toLowerCase().includes(urlPattern.toLowerCase());
-                });
+                    // ფილტრაცია URL პატერნით
+                    const filteredMovies = allMovies.filter((movie: Movie) => {
+                        const url = movie.homepage_url || "";
+                        return url.toLowerCase().includes(urlPattern.toLowerCase());
+                    });
 
-                console.log(`Found ${filteredMovies.length} movies for ${serviceName} by URL pattern`);
-                setMovies(filteredMovies);
-            } catch (err) {
-                console.error(`Error fetching movies for ${serviceName}:`, err);
-                setError(err instanceof Error ? err : new Error('Unknown error'));
-            } finally {
-                setIsLoading(false);
+                    console.log(`Found ${filteredMovies.length} movies for ${serviceName} by URL pattern`);
+                    setMovies(filteredMovies);
+                } catch (err) {
+                    console.error(`Error fetching all movies:`, err);
+                } finally {
+                    setIsLoading(false);
+                }
             }
         }
 
-        fetchMovies();
-    }, [companyId, platform, urlPattern, serviceName]);
+        if (data || error) {
+            fetchAndFilterMovies();
+        }
+    }, [data, error, serviceName, urlPattern]);
 
     const scroll = (direction: 'left' | 'right') => {
         if (scrollRef.current) {
@@ -176,10 +178,11 @@ function MovieStreamingSection({
         }
     };
 
-    // Only render the section if we have movies or are still loading
+    // სექციას არ გამოვაჩენთ თუ ფილმები არ გვაქვს და ჩატვირთვაც დასრულებულია
     if (!isLoading && movies.length === 0) {
         return null;
     }
+
 
     return (
         <section className="mb-12 group/row">
