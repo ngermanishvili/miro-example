@@ -5,15 +5,12 @@ import TVShowDetailPage from "@/app/tv-shows/[id]/page";
 import TVShowDetails from "@/components/tv_series/details/TVShowDetails";
 
 interface TVShowsDetailsPageProps {
-    params: {
-        id: string;
-    };
+    params: Promise<{ id: string }>;
 }
 
 // დინამიური მეტადატა გვერდისთვის
 export async function generateMetadata({ params }: TVShowsDetailsPageProps): Promise<Metadata> {
-    const { id } = params;
-
+    const { id } = await params;
     try {
         const show = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tv-series/${id}`, {
             next: { revalidate: 3600 }, // 1 საათი
@@ -47,8 +44,7 @@ export async function generateMetadata({ params }: TVShowsDetailsPageProps): Pro
 }
 
 export default async function TVShowDetailsPage({ params }: TVShowsDetailsPageProps) {
-    const { id } = params;
-
+    const { id } = await params;
     try {
         const show = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tv-series/${id}`, {
             next: { revalidate: 3600 }, // 1 საათი

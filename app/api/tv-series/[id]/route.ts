@@ -99,11 +99,9 @@ const getTVSeriesDetails = unstable_cache(
 );
 
 // დინამიური მარშრუტის დამმუშავებელი GET მოთხოვნებისთვის
-export async function GET(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
-    const { id } = params;
+export async function GET(request: NextRequest) {
+    const url = new URL(request.nextUrl);
+    const id = url.pathname.split('/').pop();
 
     if (!id) {
         return NextResponse.json(
@@ -137,11 +135,9 @@ export async function GET(
 }
 
 // ქეშის ინვალიდაციისთვის POST მეთოდი
-export async function POST(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
-    const { id } = params;
+export async function POST(request: NextRequest) {
+    const url = new URL(request.nextUrl);
+    const id = url.pathname.split('/').pop();
 
     try {
         const { revalidateTag } = await import('next/cache');

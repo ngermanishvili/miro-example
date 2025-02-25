@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import TVShowsMainPage from '@/components/tv-seriess/tv-series-company';
+import TVShowsMainPage from '@/components/tv_series/tv-series-company';
 import ContentTypeSwitcher, { ContentType } from './ContentTypeSwitcher';
 import MoviesMainPage from '@/components/movies/movies-company';
 
