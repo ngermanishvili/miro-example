@@ -52,7 +52,7 @@ export default function Hero({
           imdbRating={imdbRating}
         />
       </div>
-      <Newsletter />
+      {/* <Newsletter /> */}
 
       {/* Optional gradient overlay for better text visibility */}
       <div className="absolute bottom-0 left-0 right-0 h-[100px] bg-gradient-to-t from-[#1a0404] to-transparent" />
