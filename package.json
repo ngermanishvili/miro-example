@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "overrides": {
+    "@next/swc-linux-x64-gnu": "15.1.7"
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "^1.2.2",

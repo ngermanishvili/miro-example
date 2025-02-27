@@ -3,7 +3,9 @@
 import { useState } from "react";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
-import ContentTypeSwitcher, { ContentType } from "./components/ContentTypeSwitcher";
+import ContentTypeSwitcher, {
+  ContentType,
+} from "./components/ContentTypeSwitcher";
 import Footer from "./components/Footer";
 import TVShowsMainPage from "@/components/tv_series/tv-series-company";
 import MoviesMainPage from "@/components/movies/movies-company";
@@ -17,6 +19,8 @@ export default function Home() {
   };
 
   return (
+    
+
     <div className="min-h-screen bg-black text-white">
       <Header />
 
@@ -35,11 +39,7 @@ export default function Home() {
       />
 
       <main className="relative z-10 px-4 lg:px-12">
-        {contentType === "movies" ? (
-          <MoviesMainPage />
-        ) : (
-          <TVShowsMainPage />
-        )}
+        {contentType === "movies" ? <MoviesMainPage /> : <TVShowsMainPage />}
       </main>
       <Footer />
     </div>
