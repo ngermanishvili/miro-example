@@ -7,6 +7,7 @@ import ContentTypeSwitcher, { ContentType } from "./components/ContentTypeSwitch
 import Footer from "./components/Footer";
 import TVShowsMainPage from "@/components/tv_series/tv-series-company";
 import MoviesMainPage from "@/components/movies/movies-company";
+import Search from "@/components/movies/search";
 
 export default function Home() {
   const [contentType, setContentType] = useState<ContentType>("movies");
@@ -18,6 +19,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Header />
+
       <Hero
         title_eng="Example Title ENG"
         title_geo="Example Title GEO"
@@ -25,6 +27,7 @@ export default function Home() {
         description_geo="Example Description GEO"
         imagePath="/example-image-path.jpg"
       />
+      <Search />
 
       <ContentTypeSwitcher
         onTypeChange={handleContentTypeChange}

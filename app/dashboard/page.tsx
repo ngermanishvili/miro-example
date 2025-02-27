@@ -10,7 +10,6 @@ export default function DashboardPage() {
     return (
         <div className="min-h-screen bg-zinc-950">
             <DashboardHero />
-
             {/* Main Content with Top Padding for Profile Overlay */}
             <div className="p-6 pt-28">
                 <FeaturedGames />

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Lucene Movie Search</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button#indexBtn {
+            background-color: #e74c3c;
+        }
+
+        button#indexBtn:hover {
+            background-color: #c0392b;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        #results {
+            margin-top: 20px;
+        }
+
+        .status {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #6c757d;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .movie-card {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            background-color: white;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .movie-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+        }
+
+        .movie-details {
+            padding: 15px;
+        }
+
+        .movie-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .movie-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #95a5a6;
+        }
+
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Lucene Movie Search</h1>
+
+        <div class="actions">
+            <button id="testBtn">Test API</button>
+            <button id="indexBtn">Index Movies</button>
+            <button id="listBtn">List Movies</button>
+        </div>
+
+        <div class="search-box">
+            <input id="queryInput" type="text" placeholder="Search for movies in Georgian or English...">
+            <button id="searchBtn">Search</button>
+        </div>
+
+        <div id="status" class="status">Ready to search. Try typing a movie name in Georgian or English.</div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // Helper function to display results
+        function showStatus(message, isError = false) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.style.borderLeftColor = isError ? '#e74c3c' : '#6c757d';
+            statusDiv.style.backgroundColor = isError ? '#fdeaea' : '#f8f9fa';
+        }
+
+        // Test API connectivity
+        document.getElementById('testBtn').addEventListener('click', async () => {
+            showStatus('Testing API connection...');
+            try {
+                const response = await fetch('http://localhost:8080/api/test');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                showStatus('API test successful! Server is responding correctly.');
+                document.getElementById('results').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (err) {
+                showStatus('Error testing API: ' + err.message, true);
+                console.error('Error:', err);
+            }
+        });
+
+        // Index movies
+        document.getElementById('indexBtn').addEventListener('click', async () => {
+            showStatus('Indexing movies... This may take a moment.');
+            try {
+                const response = await fetch('http://localhost:8080/api/index-movies', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus('✅ ' + data.message);
+                } else {
+                    showStatus('⚠️ ' + (data.error || 'Unknown error occurred'), true);
+                }
+
+                document.getElementById('results').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (err) {
+                showStatus('Error indexing movies: ' + err.message, true);
+                console.error('Error:', err);
+            }
+        });
+
+        // List movies (for debugging)
+        document.getElementById('listBtn').addEventListener('click', async () => {
+            showStatus('Fetching movie list...');
+            try {
+                const response = await fetch('http://localhost:8080/api/list-movies');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+
+                if (data.count > 0) {
+                    showStatus(`Found ${data.count} movies in database.`);
+
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = '<h2>First 10 Movies in Database</h2>';
+
+                    const movieList = document.createElement('ul');
+                    data.movies.slice(0, 10).forEach(movie => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<strong>${movie.title_geo || 'N/A'}</strong> / ${movie.title_eng || 'N/A'} (ID: ${movie.id})`;
+                        movieList.appendChild(li);
+                    });
+
+                    resultsDiv.appendChild(movieList);
+                    resultsDiv.innerHTML += '<pre>Total: ' + data.count + ' movies</pre>';
+                } else {
+                    showStatus('No movies found in database.', true);
+                    document.getElementById('results').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                }
+            } catch (err) {
+                showStatus('Error listing movies: ' + err.message, true);
+                console.error('Error:', err);
+            }
+        });
+
+        // Search function
+        async function performSearch() {
+            const query = document.getElementById('queryInput').value.trim();
+            if (!query) {
+                showStatus('Please enter a search query', true);
+                return;
+            }
+
+            showStatus(`Searching for: "${query}"...`);
+            try {
+                const response = await fetch(`http://localhost:8080/api/search?query=${encodeURIComponent(query)}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+
+                const resultsDiv = document.getElementById('results');
+
+                if (data.count > 0) {
+                    showStatus(`Found ${data.count} results for: "${data.query}"`);
+
+                    // Create movie grid
+                    const movieGrid = document.createElement('div');
+                    movieGrid.className = 'movie-grid';
+
+                    data.results.forEach(movie => {
+                        const card = document.createElement('div');
+                        card.className = 'movie-card';
+
+                        // Movie image/poster
+                        const imageUrl = movie.backdrop_poster_url ||
+                            (movie.backdrop_path_tmdb ? `https://image.tmdb.org/t/p/w500${movie.backdrop_path_tmdb}` : null);
+
+                        const imageDiv = document.createElement('div');
+                        imageDiv.className = 'movie-image';
+
+                        if (imageUrl) {
+                            imageDiv.style.backgroundImage = `url('${imageUrl}')`;
+                        } else {
+                            imageDiv.textContent = 'No image available';
+                        }
+
+                        // Movie details
+                        const detailsDiv = document.createElement('div');
+                        detailsDiv.className = 'movie-details';
+
+                        const titleDiv = document.createElement('div');
+                        titleDiv.className = 'movie-title';
+                        titleDiv.textContent = movie.title_geo || 'Untitled';
+
+                        const subtitleDiv = document.createElement('div');
+                        subtitleDiv.className = 'movie-subtitle';
+                        subtitleDiv.textContent = movie.title_eng || '';
+
+                        const metaDiv = document.createElement('div');
+                        metaDiv.className = 'movie-meta';
+
+                        const ratingSpan = document.createElement('span');
+                        ratingSpan.textContent = movie.imdb_vote ? `⭐ ${movie.imdb_vote}` : '';
+
+                        const yearSpan = document.createElement('span');
+                        yearSpan.textContent = movie.release_date || '';
+
+                        // Assemble the card
+                        metaDiv.appendChild(ratingSpan);
+                        metaDiv.appendChild(yearSpan);
+
+                        detailsDiv.appendChild(titleDiv);
+                        detailsDiv.appendChild(subtitleDiv);
+                        detailsDiv.appendChild(metaDiv);
+
+                        card.appendChild(imageDiv);
+                        card.appendChild(detailsDiv);
+
+                        movieGrid.appendChild(card);
+                    });
+
+                    resultsDiv.innerHTML = '';
+                    resultsDiv.appendChild(movieGrid);
+                } else {
+                    showStatus(`No results found for: "${data.query}"`, true);
+                    resultsDiv.innerHTML = `
+                        <div style="text-align: center; padding: 30px;">
+                            <h3>No movies found</h3>
+                            <p>Try a different search term or check if the movie database has been indexed.</p>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                showStatus('Error performing search: ' + err.message, true);
+                console.error('Error:', err);
+            }
+        }
+
+        // Search button click
+        document.getElementById('searchBtn').addEventListener('click', performSearch);
+
+        // Search on Enter key
+        document.getElementById('queryInput').addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+    </script>
+</body>
+
+</html>
