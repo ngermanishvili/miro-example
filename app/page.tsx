@@ -35,6 +35,7 @@ export default function Home() {
         initialType={contentType}
       />
 
+
       <main className="relative z-10 px-4 lg:px-12">
         {contentType === "movies" ? (
           <MoviesMainPage />
