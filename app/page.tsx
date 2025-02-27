@@ -29,6 +29,7 @@ export default function Home() {
       />
       <Search />
 
+
       <ContentTypeSwitcher
         onTypeChange={handleContentTypeChange}
         initialType={contentType}
