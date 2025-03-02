@@ -1,4 +1,3 @@
-// Header.tsx
 "use client"
 
 import Link from "next/link"
@@ -7,15 +6,16 @@ import { useState } from "react"
 import { Menu, X, Search, Bell, User } from "lucide-react"
 import Logo from "@/public/assets/logo/logo-desktop.svg"
 
-interface StreamingServicesProps {
+interface HeaderProps {
   className?: string;
+  onOpenSearch: () => void; // Callback to open search modal
 }
 
-export default function Header({ className }: StreamingServicesProps) {
+export default function Header({ className, onOpenSearch }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="fixed top-0 z-50 w-full bg-black from-black/80 to-transparent backdrop-blur-sm">
+    <header className="fixed top-0 z-40 w-full bg-black from-black/80 to-transparent backdrop-blur-sm">
       <div className="px-4 lg:px-12 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-8">
@@ -38,18 +38,24 @@ export default function Header({ className }: StreamingServicesProps) {
             </nav>
           </div>
           <div className="flex items-center space-x-6">
-            <button className="text-white hover:text-gray-300 transition">
+            {/* Search button that triggers the modal */}
+            <button
+              onClick={onOpenSearch}
+              className="text-white hover:text-gray-300 transition"
+              aria-label="Search"
+            >
               <Search className="w-5 h-5" />
             </button>
-            <button className="text-white hover:text-gray-300 transition">
+            <button className="text-white hover:text-gray-300 transition" aria-label="Notifications">
               <Bell className="w-5 h-5" />
             </button>
-            <button className="text-white hover:text-gray-300 transition">
+            <button className="text-white hover:text-gray-300 transition" aria-label="Profile">
               <User className="w-5 h-5" />
             </button>
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden text-white hover:text-gray-300 transition"
+              aria-label="Menu"
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>

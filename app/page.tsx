@@ -9,20 +9,30 @@ import ContentTypeSwitcher, {
 import Footer from "./components/Footer";
 import TVShowsMainPage from "@/components/tv_series/tv-series-company";
 import MoviesMainPage from "@/components/movies/movies-company";
-import Search from "@/components/movies/search";
+import MovieSearchModal from "@/components/movies/search/MovieSearchModal";
 
 export default function Home() {
   const [contentType, setContentType] = useState<ContentType>("movies");
+  const [isSearchOpen, setIsSearchOpen] = useState(false); // State for search modal
 
   const handleContentTypeChange = (type: ContentType) => {
     setContentType(type);
   };
 
-  return (
-    
+  // Function to open search modal
+  const openSearchModal = () => {
+    setIsSearchOpen(true);
+  };
 
+  // Function to close search modal
+  const closeSearchModal = () => {
+    setIsSearchOpen(false);
+  };
+
+  return (
     <div className="min-h-screen bg-black text-white">
-      <Header />
+      {/* Pass the openSearchModal function to Header */}
+      <Header onOpenSearch={openSearchModal} />
 
       <Hero
         title_eng="Example Title ENG"
@@ -31,7 +41,6 @@ export default function Home() {
         description_geo="Example Description GEO"
         imagePath="/example-image-path.jpg"
       />
-      <Search />
 
       <ContentTypeSwitcher
         onTypeChange={handleContentTypeChange}
@@ -41,7 +50,14 @@ export default function Home() {
       <main className="relative z-10 px-4 lg:px-12">
         {contentType === "movies" ? <MoviesMainPage /> : <TVShowsMainPage />}
       </main>
+
       <Footer />
+
+      {/* Movie search modal placed at the root level, outside of Header */}
+      <MovieSearchModal
+        isOpen={isSearchOpen}
+        onClose={closeSearchModal}
+      />
     </div>
   );
 }
