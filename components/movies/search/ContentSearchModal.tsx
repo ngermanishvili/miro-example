@@ -119,7 +119,7 @@ const ContentSearchModal = ({ isOpen, onClose }: ContentSearchModalProps) => {
             // Add contentType filter if selected
             const filterParam = contentTypeFilter ? `&contentType=${contentTypeFilter}` : '';
             const response = await fetch(
-                `http://64.225.104.77:8080/api/search?query=${encodeURIComponent(query)}${filterParam}`
+                `https://smartv.cfd/api/search?query=${encodeURIComponent(query)}${filterParam}`
             );
 
 
