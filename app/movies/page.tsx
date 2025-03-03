@@ -46,7 +46,7 @@ const categories = [
 export default function Movies() {
   return (
     <div className="min-h-screen bg-black text-white">
-      <Header />
+      {/* <Header /> */}
       {/* <Hero
         title="Movies"
         subtitle="Discover the latest blockbusters and timeless classics"
