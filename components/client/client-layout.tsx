@@ -20,7 +20,7 @@ export default function GlobalLayout({ children, className }: GlobalLayoutProps)
     return (
         <div className={`relative min-h-screen bg-black text-white ${className || ''}`}>
             {/* Fixed Header */}
-            <Header className="fixed top-0 left-0 right-0 z-50" />
+            {/* <Header className="fixed top-0 left-0 right-0 z-50" /> */}
 
             <div className="flex min-h-screen pt-16">
                 {/* Sidebar */}
