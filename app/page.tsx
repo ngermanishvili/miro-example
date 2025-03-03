@@ -9,7 +9,7 @@ import ContentTypeSwitcher, {
 import Footer from "./components/Footer";
 import TVShowsMainPage from "@/components/tv_series/tv-series-company";
 import MoviesMainPage from "@/components/movies/movies-company";
-import MovieSearchModal from "@/components/movies/search/MovieSearchModal";
+import ContentSearchModal from "@/components/movies/search/ContentSearchModal";
 
 export default function Home() {
   const [contentType, setContentType] = useState<ContentType>("movies");
@@ -54,7 +54,7 @@ export default function Home() {
       <Footer />
 
       {/* Movie search modal placed at the root level, outside of Header */}
-      <MovieSearchModal
+      <ContentSearchModal
         isOpen={isSearchOpen}
         onClose={closeSearchModal}
       />
