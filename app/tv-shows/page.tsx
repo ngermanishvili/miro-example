@@ -68,7 +68,7 @@ export default function TVShows() {
   if (error) {
     return (
       <div className="min-h-screen bg-black text-white">
-        <Header />
+        {/* <Header /> */}
         <div className="text-center py-10">
           <p className="text-red-500 mb-4">Failed to load shows</p>
           <button
@@ -85,7 +85,7 @@ export default function TVShows() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Header />
+      {/* <Header /> */}
       {shows.length > 0 && (
         <Hero
           title_eng={shows[4].title_eng}
