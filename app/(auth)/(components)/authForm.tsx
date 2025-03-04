@@ -96,22 +96,32 @@ export default function AuthForm({ mode, callbackUrl }: AuthFormProps) {
           else if (
             verificationCheck.exists &&
             !verificationCheck.verified &&
-            !result.error.includes("CredentialsSignin")
+            !result.error.includes("credentials")
           ) {
-            // Password seems correct but email isn't verified
             setUnverifiedEmail(email);
             setError("Please verify your email address before signing in.");
           } else {
-            // Standard invalid credentials error
-            setError("Invalid email or password.");
+            setError(result.error || "An error occurred during sign in");
           }
-        } else if (result?.ok) {
-          // Successful login
-          setLoading(true);
+        } else if (result?.url) {
+          console.log("Redirecting to:", result.url);
 
-          // Force a hard reload to the dashboard
-          window.location.href = "/dashboard";
-          return;
+          // Set a flag in localStorage to indicate we're in the auth process
+          localStorage.setItem("auth_redirect_pending", result.url);
+
+          // Add a longer delay to ensure cookies are set before redirecting
+          setTimeout(() => {
+            try {
+              // Clear the flag before navigating
+              localStorage.removeItem("auth_redirect_pending");
+              // Use replace instead of href to avoid adding to browser history
+              window.location.replace(result.url || "/dashboard");
+            } catch (error) {
+              console.error("Navigation error:", error);
+              localStorage.removeItem("auth_redirect_pending");
+              window.location.replace("/dashboard");
+            }
+          }, 1000); // Longer delay to ensure cookies are set
         }
       } catch (error) {
         console.error("Sign-in error:", error);

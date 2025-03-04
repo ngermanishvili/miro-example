@@ -36,6 +36,21 @@ export const {
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
+  },
+  cookies: {
+    sessionToken: {
+      name:
+        process.env.NODE_ENV === "production"
+          ? "__Secure-next-auth.session-token"
+          : "next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
   },
   pages: {
     signIn: "/sign-in",
@@ -105,6 +120,7 @@ export const {
         session.user.email = token.email!;
         session.user.emailVerified = token.emailVerified as Date | null;
       }
+      console.log("Session callback completed for:", session?.user?.email);
       return session;
     },
     async jwt({ token, user, account }) {
@@ -112,37 +128,61 @@ export const {
         token.sub = user.id;
         token.email = user.email;
         token.emailVerified = user.emailVerified;
+        console.log("JWT callback - User authenticated:", user.email);
       }
       return token;
     },
     async redirect({ url, baseUrl }) {
-      // Always allow the callback URL
-      if (url.startsWith("/api/auth/callback")) {
+      console.log("Redirect callback - URL:", url, "BaseURL:", baseUrl);
+
+      // For credential callbacks, allow as-is
+      if (url.includes("/api/auth/callback/credentials")) {
         return url;
       }
-      // Always redirect to dashboard after sign in
+
+      // Special case for dashboard
+      if (url === `${baseUrl}/dashboard` || url === "/dashboard") {
+        return `${baseUrl}/dashboard`;
+      }
+
+      // For any sign-in URL, redirect to dashboard
       if (url.includes("/sign-in")) {
         return `${baseUrl}/dashboard`;
       }
-      // Handle relative URLs
+
+      // If URL is relative, prepend baseUrl
       if (url.startsWith("/")) {
         return `${baseUrl}${url}`;
       }
-      // Allow same origin URLs
+
+      // For URLs on the same origin, allow as-is
       if (url.startsWith(baseUrl)) {
         return url;
       }
+
+      // Default fallback
       return `${baseUrl}/dashboard`;
+    },
+  },
+  debug: true, // Enable debug mode always for now
+  logger: {
+    error(error: Error) {
+      console.error("NextAuth Error:", error);
+    },
+    warn(code: string) {
+      console.warn("NextAuth Warning:", code);
+    },
+    debug(message: string, metadata?: unknown) {
+      console.log("NextAuth Debug:", message, metadata);
     },
   },
   events: {
     async signIn({ user }) {
       console.log("User signed in:", user.email);
     },
-    async session({ session, token }) {
-      console.log("Session update:", session.user.email);
+    async session({ session }) {
+      console.log("Session updated for:", session?.user?.email);
     },
   },
-  debug: process.env.NODE_ENV === "development",
   trustHost: true,
 });

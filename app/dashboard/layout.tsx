@@ -25,7 +25,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <main className={`
           flex-1 
           transition-all duration-300
-          ${isSidebarExpanded ? "lg:ml-60" : "lg:ml-16"}
+          ${isSidebarExpanded ? "lg:pl-60" : "lg:pl-16"}
           w-full
         `}>
                     {children}
