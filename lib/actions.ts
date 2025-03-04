@@ -1,5 +1,5 @@
 import { schema } from "@/lib/schema";
-import db from "@/lib/db";
+import {db} from "@/lib/db";
 import { executeAction } from "@/lib/executeAction";
 import { v4 as uuidv4 } from "uuid";
 import { sendVerificationEmail } from "@/lib/email";
