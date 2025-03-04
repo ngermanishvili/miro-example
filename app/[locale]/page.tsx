@@ -1,9 +1,9 @@
 // pages/index.tsx
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import Header from '../components/Header';
-import Hero from '../components/Hero';
-import ContentSection from '../components/ContentSection';
+import Header from '../../components/Header';
+import Hero from '../../components/Hero';
+import ContentSection from '../../components/ContentSection';
 import Footer from '@/components/Footer';
 
 const Home: NextPage = () => {

@@ -1,0 +1,143 @@
+[
+  {
+    "id": "floating-villa",
+    "title": "FLOATING VILLA",
+    "shortDescription": "A modern sustainable villa with stunning views in Dubai, UAE.",
+    "location": "Dubai, United Arab Emirates",
+    "function": "Residential",
+    "area": "678 sqm",
+    "year": "2024",
+    "description": [
+      "This 500 m² villa in Dubai, designed by our team, blends modern architecture with a focus on sustainability and spatial quality. The open-plan layout features floor-to-ceiling windows that maximize natural light and offer stunning views, while spacious living areas and bedrooms provide comfort and flexibility.",
+      "Greenery elements on the façade create a natural connection, enhancing both aesthetics and environmental performance. We've used sustainable materials and energy-efficient solutions to reduce the villa's footprint.",
+      "The villa's private swimming pool and landscaped gardens offer seamless indoor-outdoor living, ideal for Dubai's climate. Our design fosters a balanced, sustainable living environment with luxury and harmony."
+    ],
+    "floors": [
+      {
+        "name": "Ground Floor",
+        "image": "/assets/r1.png",
+        "measurements": [
+          "Living Room.............. 47 sqm.",
+          "Kitchen................. 25 sqm.",
+          "Dining Room............. 30 sqm.",
+          "Master Bedroom.......... 35 sqm.",
+          "Bathroom................ 15 sqm.",
+          "Terrace................. 60 sqm."
+        ]
+      },
+      {
+        "name": "First Floor",
+        "image": "/assets/r2.png",
+        "measurements": [
+          "Bedroom 1............... 32 sqm.",
+          "Bedroom 2............... 28 sqm.",
+          "Bathroom 1.............. 12 sqm.",
+          "Bathroom 2.............. 12 sqm.",
+          "Office.................. 20 sqm.",
+          "Balcony................. 40 sqm."
+        ]
+      }
+    ],
+    "images": [
+      {
+        "src": "/assets/p1.png",
+        "alt": "Exterior View 1"
+      },
+      {
+        "src": "/assets/p2.png",
+        "alt": "Exterior View 2"
+      },
+      {
+        "src": "/assets/p3.png",
+        "alt": "Pool View"
+      },
+      {
+        "src": "/assets/p4.png",
+        "alt": "Pool View 2"
+      },
+      {
+        "src": "/assets/p5.png",
+        "alt": "Pool View 3"
+      }
+    ],
+    "thumbnail": "/assets/p1.png"
+  },
+  {
+    "id": "urban-oasis",
+    "title": "URBAN OASIS",
+    "shortDescription": "A contemporary urban apartment complex with integrated greenery in Berlin.",
+    "location": "Berlin, Germany",
+    "function": "Residential",
+    "area": "1,200 sqm",
+    "year": "2023",
+    "description": [
+      "Urban Oasis is an innovative residential complex that brings nature into the heart of Berlin. The design incorporates extensive green spaces, rooftop gardens, and vertical forests to create a microclimate that improves air quality and reduces energy consumption.",
+      "The apartments feature open layouts with flexible spaces that can be adapted to different lifestyles. Large windows and terraces connect the interiors with the surrounding greenery, creating a seamless indoor-outdoor experience.",
+      "The project utilizes sustainable materials and advanced energy systems, including solar panels and rainwater collection, reducing its environmental impact while providing comfortable living spaces."
+    ],
+    "floors": [
+      {
+        "name": "Sample Floor",
+        "image": "/assets/r1.png",
+        "measurements": [
+          "Living Room.............. 45 sqm.",
+          "Kitchen................. 20 sqm.",
+          "Dining Area............. 25 sqm.",
+          "Master Bedroom.......... 30 sqm.",
+          "Bathroom................ 15 sqm.",
+          "Terrace................. 35 sqm."
+        ]
+      }
+    ],
+    "images": [
+      {
+        "src": "/assets/p1.png",
+        "alt": "Building Exterior"
+      },
+      {
+        "src": "/assets/p3.png",
+        "alt": "Garden View"
+      }
+    ],
+    "thumbnail": "/assets/p3.png"
+  },
+  {
+    "id": "sea-breeze",
+    "title": "SEA BREEZE",
+    "shortDescription": "A luxurious beachfront residence with panoramic ocean views in Greece.",
+    "location": "Santorini, Greece",
+    "function": "Residential",
+    "area": "420 sqm",
+    "year": "2024",
+    "description": [
+      "Sea Breeze is a stunning beachfront villa that embraces the Mediterranean lifestyle with its bright, airy spaces and connection to the natural surroundings. The design takes inspiration from traditional Greek architecture while incorporating modern elements and technologies.",
+      "The villa features an infinity pool that seems to merge with the sea, creating a spectacular visual effect. The interiors are designed with natural materials like stone, wood, and local textiles, creating a warm and inviting atmosphere.",
+      "Energy efficiency is achieved through passive design strategies, including optimal orientation, cross-ventilation, and shading elements that reduce the need for artificial cooling during hot summers."
+    ],
+    "floors": [
+      {
+        "name": "Main Floor",
+        "image": "/assets/r2.png",
+        "measurements": [
+          "Living Area.............. 55 sqm.",
+          "Kitchen................. 30 sqm.",
+          "Dining Room............. 35 sqm.",
+          "Master Suite............ 40 sqm.",
+          "Guest Room.............. 25 sqm.",
+          "Pool Deck............... 80 sqm."
+        ]
+      }
+    ],
+    "images": [
+      {
+        "src": "/assets/p2.png",
+        "alt": "Villa Exterior"
+      },
+      {
+        "src": "/assets/p4.png",
+        "alt": "Pool Area"
+      }
+    ],
+    "thumbnail": "/assets/p2.png"
+  }
+]

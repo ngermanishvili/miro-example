@@ -93,19 +93,7 @@ export default function ServicesPage() {
     return (
         <div className="flex flex-col items-center w-full max-w-7xl mx-auto px-4 py-32">
             {/* Hero Image */}
-            <div className="mb-16 w-full max-w-md relative">
-                <div className="aspect-square w-full relative overflow-hidden rounded-2xl shadow-2xl">
-                    <img
-                        src="/api/placeholder/800/800"
-                        alt="Services Hero"
-                        className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50"></div>
-                    <h1 className="absolute bottom-8 left-8 text-4xl font-bold text-white">
-                        Our Services
-                    </h1>
-                </div>
-            </div>
+            <div className="mb-16 w-full max-w-md relative h-[15vh]"></div>
 
             {/* Services Container */}
             <div
