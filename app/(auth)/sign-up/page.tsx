@@ -94,16 +94,16 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/auth";
 
-interface PageProps {
-  searchParams: Record<string, string | undefined>;
-}
+type PageProps = {
+  searchParams?: { success?: string; email?: string };
+};
 
-const Page = async ({ searchParams }: PageProps) => {
+const Page = async ({ searchParams = {} }: PageProps) => {
   const session = await auth();
   if (session) redirect("/");
 
-  const success = searchParams?.success === "true";
-  const email = searchParams?.email;
+  const success = searchParams.success === "true";
+  const email = searchParams.email;
 
   return (
     <div className="w-full max-w-sm mx-auto space-y-6">
