@@ -8,7 +8,7 @@ import { auth } from "@/auth";
 const Page = async ({
   searchParams,
 }: {
-  searchParams: { success?: string; email?: string };
+  searchParams: Promise<{ success?: string; email?: string }> | undefined;
 }) => {
   const session = await auth();
   if (session) redirect("/");
@@ -19,6 +19,7 @@ const Page = async ({
   // Get success parameter and email from URL - use optional chaining
   const success = params?.success === "true";
   const email = params?.email;
+
   return (
     <div className="w-full max-w-sm mx-auto space-y-6">
       <h1 className="text-2xl font-bold text-center mb-6">Create Account</h1>
