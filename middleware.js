@@ -7,7 +7,7 @@ const intlMiddleware = createIntlMiddleware({
     ...routing,
     localePrefix: "always",  // Changed to "always" for consistent behavior
     defaultLocale: 'ka',
-    locales: ['ka', 'en']
+    locales: ['ka', 'en', 'ru']
 });
 
 export async function middleware(request) {

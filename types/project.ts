@@ -1,14 +1,4 @@
-export interface Floor {
-    name: string;
-    image: string;
-    measurements: string[];
-}
-
-export interface ProjectImage {
-    src: string;
-    alt: string;
-}
-
+// types/project.ts
 export interface Project {
     id: string;
     title: string;
@@ -19,6 +9,17 @@ export interface Project {
     year: string;
     description: string[];
     floors: Floor[];
-    images: ProjectImage[];
+    images: Image[];
     thumbnail: string;
+}
+
+export interface Floor {
+    name: string;
+    image: string;
+    measurements: string[];
+}
+
+export interface Image {
+    src: string;
+    alt: string;
 }

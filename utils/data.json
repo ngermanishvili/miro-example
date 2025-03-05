@@ -14,15 +14,35 @@
     ],
     "floors": [
       {
+        "name": "Axonometry",
+        "image": "/assets/r1.png",
+        "measurements": [""]
+      },
+      {
         "name": "Ground Floor",
         "image": "/assets/r1.png",
         "measurements": [
-          "Living Room.............. 47 sqm.",
-          "Kitchen................. 25 sqm.",
-          "Dining Room............. 30 sqm.",
-          "Master Bedroom.......... 35 sqm.",
-          "Bathroom................ 15 sqm.",
-          "Terrace................. 60 sqm."
+          "Entrance -- 6.2 sqm.",
+          "Staircase -- 30 sqm.",
+          "Garage -- 63 sqm.",
+          "Lounge -- 36.6 sqm.",
+          "Pool area -- 150.8 sqm.",
+          "GYM -- 85.2 sqm.",
+          "Steam Bath -- 8.7 sqm.",
+          "WC -- 4.2 sqm.",
+          "Corridor -- 8.3 sqm.",
+          "Laundry room -- 19.1 sqm.",
+          "Show kitchen/Bar -- 27 sqm.",
+          "Living Room -- 106.9 sqm.",
+          "Tech room -- 8.2 sqm.",
+          "WC -- 5.4 sqm.",
+          "Dining area -- 43 sqm.",
+          "Tech room -- 10.6 sqm.",
+          "Maids room -- 16.9 sqm.",
+          "WC -- 8.6 sqm.",
+          "Storage -- 8.2 sqm.",
+          "Kitchen -- 24 sqm.",
+          "Corridor -- 11.2 sqm."
         ]
       },
       {
@@ -62,70 +82,65 @@
     ],
     "thumbnail": "/assets/p1.png"
   },
+
   {
-    "id": "urban-oasis",
-    "title": "URBAN OASIS",
-    "shortDescription": "A contemporary urban apartment complex with integrated greenery in Berlin.",
-    "location": "Berlin, Germany",
+    "id": "kakheti-house",
+    "title": "Kakheti Alazani Valley",
+    "shortDescription": "A luxurious beachfront residence with panoramic ocean views in Greece.",
+    "location": "Tbilisi, Okrokana",
     "function": "Residential",
-    "area": "1,200 sqm",
+    "area": "2000 sqm",
     "year": "2023",
     "description": [
-      "Urban Oasis is an innovative residential complex that brings nature into the heart of Berlin. The design incorporates extensive green spaces, rooftop gardens, and vertical forests to create a microclimate that improves air quality and reduces energy consumption.",
-      "The apartments feature open layouts with flexible spaces that can be adapted to different lifestyles. Large windows and terraces connect the interiors with the surrounding greenery, creating a seamless indoor-outdoor experience.",
-      "The project utilizes sustainable materials and advanced energy systems, including solar panels and rainwater collection, reducing its environmental impact while providing comfortable living spaces."
+      "The architectural design of the house is located in Kakheti, within the Alazani Valley, a region characterized by its vast flat green landscapes and proximity to the Alazani River, which imbues the area with a distinctive sense of tranquility and connection to nature.",
+      "The building respects the natural beauty of its surroundings, incorporating local and modern materials, notably concrete, glass, and brick, to create a harmonious balance between the structure and its environment.",
+      "The house spans across a spacious plot of land, embracing the open views towards the valley. The design of the house reflects a seamless integration with the landscape, focusing on expansive, open interiors that foster a sense of freedom and connection to the outdoors.",
+      "With seven large bedrooms, the house is intended to accommodate big families, offering ample room for movement and relaxation. Each Living area is designed as a free-flowing, expansive space, allowing for both personal comfort and collective gathering, with large windows that provide an uninterrupted view of the lush greenery and river.",
+      "The open-plan layout is accentuated by the use of large glass panels, which allow natural light to flood the interior.",
+      "The living and dining areas are designed to flow naturally into the outside patio and garden, blurring the boundaries between the indoor and outdoor spaces.",
+      "On the upper floor, the bedrooms are strategically placed to take full advantage of the panoramic views. Each room is designed to evoke a sense of tranquility, with minimalistic furnishings that highlight the expansive volumes of space.",
+      "The materials, from the cool, smooth concrete surfaces to the warm brick accents, create a comforting, yet contemporary aesthetic that complements the serene landscape of the Alazani Valley."
     ],
     "floors": [
       {
-        "name": "Sample Floor",
-        "image": "/assets/r1.png",
-        "measurements": [
-          "Living Room.............. 45 sqm.",
-          "Kitchen................. 20 sqm.",
-          "Dining Area............. 25 sqm.",
-          "Master Bedroom.......... 30 sqm.",
-          "Bathroom................ 15 sqm.",
-          "Terrace................. 35 sqm."
-        ]
-      }
-    ],
-    "images": [
-      {
-        "src": "/assets/p1.png",
-        "alt": "Building Exterior"
+        "name": "Axonometry",
+        "image": "/assets/r2.png",
+        "measurements": [""]
       },
       {
-        "src": "/assets/p3.png",
-        "alt": "Garden View"
-      }
-    ],
-    "thumbnail": "/assets/p3.png"
-  },
-  {
-    "id": "sea-breeze",
-    "title": "SEA BREEZE",
-    "shortDescription": "A luxurious beachfront residence with panoramic ocean views in Greece.",
-    "location": "Santorini, Greece",
-    "function": "Residential",
-    "area": "420 sqm",
-    "year": "2024",
-    "description": [
-      "Sea Breeze is a stunning beachfront villa that embraces the Mediterranean lifestyle with its bright, airy spaces and connection to the natural surroundings. The design takes inspiration from traditional Greek architecture while incorporating modern elements and technologies.",
-      "The villa features an infinity pool that seems to merge with the sea, creating a spectacular visual effect. The interiors are designed with natural materials like stone, wood, and local textiles, creating a warm and inviting atmosphere.",
-      "Energy efficiency is achieved through passive design strategies, including optimal orientation, cross-ventilation, and shading elements that reduce the need for artificial cooling during hot summers."
-    ],
-    "floors": [
-      {
-        "name": "Main Floor",
+        "name": "Ground Floor",
         "image": "/assets/r2.png",
         "measurements": [
-          "Living Area.............. 55 sqm.",
-          "Kitchen................. 30 sqm.",
-          "Dining Room............. 35 sqm.",
-          "Master Suite............ 40 sqm.",
-          "Guest Room.............. 25 sqm.",
-          "Pool Deck............... 80 sqm."
+          "Living Room --  80 sqm.",
+          "Vestibule --  10 sqm.",
+          "Vanity --  4 sqm.",
+          "Toilet --  1.5 sqm.",
+          "Storage --  11 sqm.",
+          "Kitchen/Dining room -- 2.5 sqm.",
+          "Guest Living Room -- 46 sqm.",
+          "Guest Bedroom -- 17 sqm.",
+          "Guest Bedroom -- 17 sqm.",
+          " Outdoor Patio --  17 sqm.",
+          "Outdoor Pool -- 40sqm"
         ]
+      },
+      {
+        "name": "",
+        "image": "/assets/r2.png",
+        "measurements": [
+          "Standard Bedroom -- 22 sqm.",
+          "Standard Bedroom -- 22 sqm ",
+          "Standard Bedroom -- 20 sqm.",
+          "Master Bedroom -- 30 sqm.",
+          "Living Room -- 40 sqm.",
+          "Technical Room -- 4 sqm.",
+          "Terrace -- 280 sqm."
+        ]
+      },
+      {
+        "name": "",
+        "image": "/assets/r2.png",
+        "measurements": ["Roof Terrace . --9 sqm."]
       }
     ],
     "images": [

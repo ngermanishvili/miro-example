@@ -93,7 +93,11 @@ export default function ServicesPage() {
     return (
         <div className="flex flex-col items-center w-full max-w-7xl mx-auto px-4 py-32">
             {/* Hero Image */}
-            <div className="mb-16 w-full max-w-md relative h-[15vh]"></div>
+            <div className=" w-full max-w-md relative">
+                <div className="aspect-square w-full relative overflow-hidden rounded-2xl ">
+
+                </div>
+            </div>
 
             {/* Services Container */}
             <div
