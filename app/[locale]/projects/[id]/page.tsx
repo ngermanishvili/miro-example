@@ -25,12 +25,14 @@ interface ProjectParams {
     locale: string;
 }
 
+// Next.js 15-ის თავსებადი PageProps ტიპი
 interface ProjectDetailPageProps {
-    params: Promise<ProjectParams> | ProjectParams;
+    params: Promise<ProjectParams>;
 }
 
 export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
-    const resolvedParams = React.use(params as any) as ProjectParams;
+    // React.use გამოვიყენოთ Promise-ის დასარეზოლვად
+    const resolvedParams = React.use(params);
     const { id, locale } = resolvedParams;
 
     // SWR გამოყენება მონაცემების ქეშირებისთვის და ხელახალი ჩატვირთვისთვის
@@ -56,7 +58,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
     return (
         <div className="h-screen w-full flex flex-col md:flex-row mt-24">
             {/* Left Panel - ოპტიმიზებული */}
-            <div className="w-full md:w-[45%] h-full border-r border-gray-200 overflow-y-auto">
+            <div className="w-full md:w-[30%] h-full border-r border-gray-200 overflow-y-auto">
                 <div className="p-8">
                     <div className="pt-20 lg:pr-8 space-y-8">
                         {/* Back Button - ოპტიმიზებული */}
@@ -100,7 +102,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
                         <div className="space-y-4">
                             <h2 className="font-semibold">DESCRIPTION:</h2>
                             <div className="space-y-4 text-gray-700">
-                                {project.description.map((paragraph: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, idx: React.Key | null | undefined) => (
+                                {project.description.map((paragraph, idx) => (
                                     <p key={idx}>{paragraph}</p>
                                 ))}
                             </div>
@@ -128,13 +130,14 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
 
 // გამოყოფილი კომპონენტები ლეივი ჩატვირთვისთვის
 function ProgrammeSection({ floors }: { floors: any[] }) {
+    console.log(floors);
     return (
         <div className="space-y-8">
             {floors.map((floor, floorIdx) => (
                 <div key={floorIdx} className="space-y-6">
                     {floor.name && <h3 className="font-semibold">{floor.name}</h3>}
                     {floor.image && (
-                        <div className="relative w-full h-64">
+                        <div className="relative w-full aspect-square max-w-md mx-auto">
                             <Image
                                 src={floor.image}
                                 alt={floor.name || `Floor ${floorIdx + 1}`}
@@ -142,7 +145,7 @@ function ProgrammeSection({ floors }: { floors: any[] }) {
                                 sizes="(max-width: 768px) 100vw, 50vw"
                                 style={{ objectFit: "contain" }}
                                 className="rounded-lg shadow-md"
-                                loading="lazy" // ლეივი ჩატვირთვა
+                                loading="lazy"
                                 placeholder="blur"
                                 blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFeAKJJHagMgAAAABJRU5ErkJggg=="
                             />
@@ -150,7 +153,7 @@ function ProgrammeSection({ floors }: { floors: any[] }) {
                     )}
                     {floor.measurements && floor.measurements.length > 0 && floor.measurements[0] !== "" && (
                         <>
-                            {/* <h2 className="font-semibold text-xl md:text-2xl">Programme:</h2> */}
+                            <h2 className="font-semibold text-xl md:text-2xl">Programme:</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {floor.measurements.map((measurement: string, idx: number) => (
                                     <div key={idx} className="text-gray-700 text-sm md:text-base">{measurement}</div>

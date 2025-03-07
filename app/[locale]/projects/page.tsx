@@ -20,12 +20,14 @@ interface LocaleParams {
     locale: string;
 }
 
+// Next.js 15-ის თავსებადი PageProps ტიპი
 interface ProjectsPageProps {
-    params: Promise<LocaleParams> | LocaleParams;
+    params: Promise<LocaleParams>;
 }
 
 export default function ProjectsPage({ params }: ProjectsPageProps) {
-    const resolvedParams = React.use(params as any) as LocaleParams;
+    // React.use გამოვიყენოთ Promise-ის დასარეზოლვად
+    const resolvedParams = React.use(params);
     const { locale } = resolvedParams;
 
     // SWR გამოყენება მონაცემების ქეშირებისთვის

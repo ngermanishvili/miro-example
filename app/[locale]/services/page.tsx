@@ -13,7 +13,7 @@ const services: Service[] = [
     },
     {
         title: "Tender Documentation",
-        description: "We provide a comprehensive set of drawings, Bill of Quantities (BoQ), schedules, specifications, and a coherent BIM (Building Information Modeling) model. The BIM model integrates all project data, including design, materials, and schedules, into a unified digital representation, ensuring consistency across all disciplines. This information is derived from our detailed design process, where we collaborate closely with structural, MEP, and interior teams. We then consolidate this data into the BIM model, which serves as a central source of truth. This ensures all project details are aligned and up-to-date, supporting a smooth tendering process and effective project execution."
+        description: "We provide a comprehensive set of drawings, BOQ (Bill of Quantities), schedules, specifications, and a coherent BIM (Building Information Modeling) models. The BIM model integrates all project data, including design, materials, and schedules, into a unified digital representation, ensuring consistency across all disciplines.This information is derived from our detailed design process, where we collaborate closely with structural, MEP, and other involved teams. We then consolidate this data into the BIM model, which serves as a central source of truth. This ensures all project details are aligned and up-to-date, supporting a smooth tendering process and effective project execution."
     },
     {
         title: "Scan to BIM Modeling",

@@ -1,13 +1,22 @@
 import { NextResponse } from 'next/server';
+import { jwtVerify } from 'jose';
 import createIntlMiddleware from 'next-intl/middleware';
 import { routing } from './src/i18n/routing';
 
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+
+// Add the check endpoint to public APIs
+const PUBLIC_APIS = [
+    '/api/projects',
+    '/api/auth/login',
+    '/api/auth/check'
+];
 
 const intlMiddleware = createIntlMiddleware({
     ...routing,
-    localePrefix: "always",  // Changed to "always" for consistent behavior
+    localePrefix: "always",
     defaultLocale: 'ka',
-    locales: ['ka', 'en', 'ru']
+    locales: ['ka', 'en']
 });
 
 export async function middleware(request) {
@@ -16,6 +25,45 @@ export async function middleware(request) {
     // For root path, redirect to default locale
     if (path === '/') {
         return NextResponse.redirect(new URL('/ka', request.url));
+    }
+
+    // Handle API routes
+    if (path.startsWith('/api/')) {
+        // Check if this is a public API that doesn't need authentication
+        const isPublicApi = PUBLIC_APIS.some(api => path.startsWith(api));
+        if (isPublicApi) {
+            return NextResponse.next();
+        }
+
+        // For protected API routes, verify the auth token
+        try {
+            const token = request.cookies.get('auth_token')?.value;
+            if (!token) {
+                return NextResponse.json({ status: "error", message: "ავტორიზაცია საჭიროა" }, { status: 401 });
+            }
+
+            await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+            return NextResponse.next();
+        } catch (error) {
+            console.error('API auth error:', error);
+            return NextResponse.json({ status: "error", message: "ავტორიზაცია არავალიდურია" }, { status: 401 });
+        }
+    }
+
+    // Handle admin routes
+    if (path.startsWith('/admin/')) {
+        try {
+            const token = request.cookies.get('auth_token')?.value;
+            if (!token) {
+                return NextResponse.redirect(new URL('/ka/login', request.url));
+            }
+
+            await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
+            return NextResponse.next();
+        } catch (error) {
+            console.error('Admin auth error:', error);
+            return NextResponse.redirect(new URL('/ka/login', request.url));
+        }
     }
 
     // Prevent double locale prefixing
@@ -37,9 +85,8 @@ export async function middleware(request) {
 export const config = {
     matcher: [
         '/',
-        '/((?!api|_next|_vercel|static|favicon|.*\\..*).*)',
+        '/((?!_next|_vercel|static|favicon|.*\\..*).*)',
         '/admin/:path*',
-        '/api/:path*',
-        '/login'
+        '/api/:path*'
     ]
 };

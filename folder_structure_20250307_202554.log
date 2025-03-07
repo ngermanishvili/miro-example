@@ -1,0 +1,175 @@
+Next.js პროექტის ფოლდერის სტრუქტურის ანალიზი
+პროექტის მისამართი: /Users/german/Desktop/miro-template
+თარიღი: 2025-03-07 20:25:54
+
+==================================================
+
+📁 types/
+    📄 project.ts (.ts, 0.43 KB)
+📁 app/
+    📁 [locale]/
+        📄 favicon.ico (.ico, 25.32 KB)
+        📁 projects/
+            📁 [id]/
+                📄 page.tsx (.tsx, 9.01 KB)
+            📄 page.tsx (.tsx, 4.08 KB)
+        📁 partners/
+            📄 page.tsx (.tsx, 2.62 KB)
+        📄 layout.tsx (.tsx, 0.79 KB)
+        📁 api/
+            📁 auth/
+                📁 logout/
+                    📄 route.ts (.ts, 0.73 KB)
+                📁 check/
+                    📄 route.ts (.ts, 2.57 KB)
+                📁 login/
+                    📄 route.ts (.ts, 3.20 KB)
+            📁 projects/
+                📄 route.ts (.ts, 6.18 KB)
+                📁 [id]/
+                    📄 route.ts (.ts, 9.59 KB)
+        📄 page.tsx (.tsx, 4.86 KB)
+        📄 globals.css (.css, 1.98 KB)
+        📁 login/
+            📄 page.jsx (.jsx, 4.49 KB)
+        📁 services/
+            📄 page.tsx (.tsx, 10.08 KB)
+        📁 (admin)/
+            📁 admin/
+                📁 dashboard/
+                    📁 projects/
+                        📁 [id]/
+                            📄 page.jsx (.jsx, 0.18 KB)
+                            📁 edit/
+                                📄 page.jsx (.jsx, 20.42 KB)
+                        📄 page.tsx (.tsx, 12.03 KB)
+                        📁 create/
+                            📄 page.jsx (.jsx, 0.11 KB)
+                    📄 layout.tsx (.tsx, 4.38 KB)
+                    📄 page.tsx (.tsx, 3.69 KB)
+                📄 layout.tsx (.tsx, 0.68 KB)
+                📄 page.tsx (.tsx, 0.11 KB)
+    📁 api/
+        📁 auth/
+            📁 logout/
+                📄 route.ts (.ts, 0.73 KB)
+            📁 check/
+                📄 route.ts (.ts, 2.57 KB)
+            📁 login/
+                📄 route.ts (.ts, 3.20 KB)
+        📁 projects/
+            📄 route.ts (.ts, 6.18 KB)
+            📁 [id]/
+                📄 route.ts (.ts, 9.59 KB)
+    📁 (admin)/
+        📁 admin/
+            📁 dashboard/
+                📁 projects/
+                    📁 [id]/
+                        📁 edit/
+                            📄 page.tsx (.tsx, 24.13 KB)
+                        📄 page.tsx (.tsx, 0.18 KB)
+                    📄 page.tsx (.tsx, 12.03 KB)
+                    📁 create/
+                        📄 page.jsx (.jsx, 0.11 KB)
+                📄 layout.tsx (.tsx, 4.38 KB)
+                📄 page.tsx (.tsx, 12.03 KB)
+            📄 layout.tsx (.tsx, 0.67 KB)
+            📄 page.tsx (.tsx, 0.11 KB)
+        📄 globals.css (.css, 1.98 KB)
+📄 postcss.config.mjs (.mjs, 0.13 KB)
+📄 next.config.mjs (.mjs, 0.90 KB)
+📁 utils/
+    📄 data.json (.json, 6.30 KB)
+    📄 cache.ts (.ts, 2.18 KB)
+    📄 db.ts (.ts, 1.43 KB)
+📄 next-env.d.ts (.ts, 0.21 KB)
+📄 README.md (.md, 1.43 KB)
+📄 tailwind.config.ts (.ts, 1.63 KB)
+📁 components/
+    📄 Hero.tsx (.tsx, 0.98 KB)
+    📁 ui/
+        📄 dialog.jsx (.jsx, 3.15 KB)
+        📄 radio-group.jsx (.jsx, 1.12 KB)
+        📄 switch.jsx (.jsx, 1.01 KB)
+        📄 skeleton.jsx (.jsx, 0.22 KB)
+        📄 input.jsx (.jsx, 0.67 KB)
+        📄 textarea.jsx (.jsx, 0.57 KB)
+        📄 select.jsx (.jsx, 4.56 KB)
+        📄 dropdown-menu.jsx (.jsx, 6.03 KB)
+        📄 toast.jsx (.jsx, 3.75 KB)
+        📄 button.jsx (.jsx, 1.64 KB)
+        📄 table.jsx (.jsx, 2.18 KB)
+        📄 badge.jsx (.jsx, 0.97 KB)
+        📄 toaster.jsx (.jsx, 0.77 KB)
+        📄 slider.jsx (.jsx, 0.91 KB)
+        📄 card.jsx (.jsx, 1.41 KB)
+        📄 tabs.jsx (.jsx, 1.51 KB)
+        📄 alert-dialog.jsx (.jsx, 3.39 KB)
+        📄 alert.jsx (.jsx, 1.30 KB)
+        📄 tooltip.jsx (.jsx, 1.07 KB)
+        📄 accordion.jsx (.jsx, 1.59 KB)
+        📄 label.jsx (.jsx, 0.53 KB)
+        📄 sheet.jsx (.jsx, 3.47 KB)
+    📄 AdminLogin.tsx (.tsx, 4.45 KB)
+    📁 admin/
+        📄 index.ts (.ts, 0.11 KB)
+    📄 Footer.tsx (.tsx, 2.89 KB)
+    📄 ContentSection.tsx (.tsx, 4.33 KB)
+    📄 CreateProject.tsx (.tsx, 34.35 KB)
+    📄 Header.tsx (.tsx, 4.75 KB)
+    📄 TranslationEditor.tsx (.tsx, 15.94 KB)
+    📄 AdminDashboard.tsx (.tsx, 4.19 KB)
+📁 public/
+    📄 file.svg (.svg, 0.38 KB)
+    📄 vercel.svg (.svg, 0.12 KB)
+    📄 next.svg (.svg, 1.34 KB)
+    📄 globe.svg (.svg, 1.01 KB)
+    📁 assets/
+        📄 axonometry-example.gif (.gif, 34.62 KB)
+        📄 r2.png (.png, 19.79 KB)
+        📄 r1.png (.png, 20.38 KB)
+        📄 giphy-main-animation.gif (.gif, 1356.70 KB)
+        📄 p3.png (.png, 1021.00 KB)
+        📄 p2.png (.png, 1139.59 KB)
+        📄 logo.png (.png, 82.76 KB)
+        📄 p1.png (.png, 1484.05 KB)
+        📄 p5.png (.png, 1556.55 KB)
+        📁 partners/
+            📄 c8.png (.png, 53.95 KB)
+            📄 c9.png (.png, 14.00 KB)
+            📄 c12.png (.png, 29.84 KB)
+            📄 c1.png (.png, 36.03 KB)
+            📄 c13.png (.png, 19.83 KB)
+            📄 c11.png (.png, 41.03 KB)
+            📄 c2.png (.png, 62.38 KB)
+            📄 c3.png (.png, 55.15 KB)
+            📄 c10.png (.png, 50.86 KB)
+            📄 c14.png (.png, 26.23 KB)
+            📄 c7.png (.png, 29.57 KB)
+            📄 c6.png (.png, 30.17 KB)
+            📄 c4.png (.png, 28.89 KB)
+            📄 c5.png (.png, 7.81 KB)
+        📄 p4.png (.png, 1537.76 KB)
+        📄 4.png (.png, 587.22 KB)
+        📄 5.png (.png, 1657.97 KB)
+        📄 6.png (.png, 526.92 KB)
+        📄 2.png (.png, 1484.05 KB)
+        📄 3.png (.png, 1031.62 KB)
+        📄 1.png (.png, 2252.58 KB)
+    📄 window.svg (.svg, 0.38 KB)
+📄 .gitignore (, 0.47 KB)
+📄 package-lock.json (.json, 159.05 KB)
+📄 package.json (.json, 0.84 KB)
+📄 middleware.js (.js, 2.92 KB)
+📄 structure.py (.py, 4.05 KB)
+📁 lib/
+    📄 utils.ts (.ts, 0.16 KB)
+    📄 db.ts (.ts, 1.01 KB)
+📄 components.json (.json, 0.44 KB)
+📄 tsconfig.json (.json, 0.65 KB)
+📄 .hintrc (, 0.24 KB)
+📁 src/
+    📁 i18n/
+        📄 request.js (.js, 0.41 KB)
+        📄 routing.js (.js, 0.32 KB)
