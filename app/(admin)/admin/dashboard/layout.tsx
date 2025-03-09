@@ -1,3 +1,4 @@
+//app/admin/dashboard/layout.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -116,10 +117,6 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             ))}
           </nav>
 
-          {/* Language Switcher */}
-          <div className="px-4 py-2 border-t">
-            <LanguageSwitcher />
-          </div>
 
           {/* Logout button */}
           <div className="p-4 border-t">
@@ -145,8 +142,6 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
           >
             <Menu className="w-6 h-6" />
           </button>
-
-          <LanguageSwitcher />
         </header>
 
         {/* Page Content */}

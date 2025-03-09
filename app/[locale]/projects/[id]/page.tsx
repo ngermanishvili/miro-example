@@ -5,11 +5,19 @@ import { getProjectById, mapLocale } from '@/services/projectService';
 import { SupportedLocale, ProjectLanguageData } from '@/types/project';
 import { notFound } from 'next/navigation';
 
-export async function generateMetadata({ params }: { params: { locale: SupportedLocale; id: string } }) {
-    // await params ობიექტის გამოყენებამდე
-    const paramsObject = await params;
-    const locale = paramsObject.locale;
-    const id = paramsObject.id;
+interface Params {
+    locale: SupportedLocale;
+    id: string;
+}
+
+interface PageProps {
+    params: Promise<Params>;
+}
+
+export async function generateMetadata({ params }: PageProps) {
+    // In Next.js 15, params should be awaited before using its properties
+    const resolvedParams = await params;
+    const { locale, id } = resolvedParams;
 
     const project = await getProjectById(id);
 
@@ -28,11 +36,10 @@ export async function generateMetadata({ params }: { params: { locale: Supported
     };
 }
 
-export default async function ProjectDetailPage({ params }: { params: { locale: SupportedLocale; id: string } }) {
-    // await params ობიექტის გამოყენებამდე
-    const paramsObject = await params;
-    const locale = paramsObject.locale;
-    const id = paramsObject.id;
+export default async function ProjectDetailPage({ params }: PageProps) {
+    // In Next.js 15, params should be awaited before using its properties
+    const resolvedParams = await params;
+    const { locale, id } = resolvedParams;
 
     const project = await getProjectById(id);
 
@@ -128,7 +135,7 @@ export default async function ProjectDetailPage({ params }: { params: { locale: 
             </div>
 
             {/* Right Panel - სურათების გალერეა */}
-            <div className="w-full md:w-[65%] h-full overflow-y-auto mt-4">
+            <div className="w-full md:w-[65%] h-full overflow-y-auto mt-24">
                 <div className="p-8 space-y-8">
                     <ImageGallery images={projectData.images} />
                 </div>
@@ -207,7 +214,6 @@ function ProgrammeSection({ floors, locale }: { floors: ProjectLanguageData['flo
     );
 }
 
-// სურათების გალერეის კომპონენტი
 function ImageGallery({ images }: { images: ProjectLanguageData['images'] }) {
     return (
         <>
