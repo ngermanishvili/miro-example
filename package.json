@@ -13,6 +13,7 @@
     "clsx": "^2.1.1",
     "jose": "^6.0.8",
     "lucide-react": "^0.475.0",
+    "mongodb": "^6.14.2",
     "next": "15.1.7",
     "next-cloudinary": "^6.16.0",
     "next-intl": "^3.26.5",

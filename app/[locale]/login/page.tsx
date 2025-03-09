@@ -14,13 +14,12 @@ export default function LoginPage() {
   // Get the current locale from the URL parameters
   const locale = params.locale || "ka"; // Default to "ka" if not available
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
     try {
-      // Fixed URL - this matches your file structure at app/[locale]/api/auth/login/route.ts
       const res = await fetch(`/${locale}/api/auth/login`, {
         method: "POST",
         headers: {
@@ -33,7 +32,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (data.status === "success") {
-        // ვიყენებთ მხოლოდ router.replace-ს და ველოდებით მის დასრულებას
+        // წარმატებით ავტორიზაციის შემდეგ გადავამისამართოთ admin/dashboard-ზე
         await router.replace("/admin/dashboard");
       } else {
         setError(data.message || "შესვლა ვერ მოხერხდა");
@@ -46,7 +45,6 @@ export default function LoginPage() {
     }
   };
 
-  // Rest of your component remains the same
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">

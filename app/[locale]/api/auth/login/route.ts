@@ -1,6 +1,6 @@
-//app/[locale]/api/auth/login/route.ts
-import { query } from "@/lib/db";
+// app/[locale]/api/auth/login/route.ts
 import { NextResponse } from "next/server";
+import { connectToDatabase } from "@/lib/mongodb"; // ეს შეცვალეთ თქვენი MongoDB კავშირის მიხედვით
 import crypto from 'crypto';
 import { SignJWT } from 'jose';
 
@@ -19,8 +19,10 @@ interface AdminUser {
 
 export async function POST(request: Request) {
     try {
-        const body: LoginRequest = await request.json();
+        const body = await request.json();
         const { username, password } = body;
+
+        console.log("Login attempt:", username);
 
         if (!username || !password) {
             return NextResponse.json(
@@ -29,20 +31,26 @@ export async function POST(request: Request) {
             );
         }
 
-        // PostgreSQL-ის სინტაქსით - შევცვალეთ query რომ არ მოითხოვოს is_active
-        const users = await query(
-            `SELECT * FROM admin WHERE username = $1`,
-            [username]
-        );
+        // MongoDB-სთან დაკავშირება
+        console.log("Connecting to MongoDB...");
+        const { db } = await connectToDatabase();
+        console.log("Connected to MongoDB");
 
-        if (!users.length) {
+        // მომხმარებლის მოძებნა
+        console.log("Searching for user:", username);
+        const usersCollection = db.collection("admin");
+        const collectionsCount = await db.listCollections({ name: "admin" }).toArray();
+        console.log("Admin collection exists:", collectionsCount.length > 0);
+
+        const user = await usersCollection.findOne({ username });
+        console.log("User found:", user ? "Yes" : "No");
+
+        if (!user) {
             return NextResponse.json(
                 { status: "error", message: "მომხმარებელი ვერ მოიძებნა" },
                 { status: 401 }
             );
         }
-
-        const user = users[0] as AdminUser;
 
         // პაროლის შემოწმება (SHA-256 ჰეშირებით)
         const hashedPassword: string = crypto

@@ -9,14 +9,26 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 const PUBLIC_APIS = [
     '/api/projects',
     '/api/auth/login',
-    '/api/auth/check'
+    '/api/auth/check',
+    '/api/direct-insert',
+    '/api/case-login',
+
+
+    // დებაგ ენდპოინტები (დაამატეთ)
+    '/api/check-admin',
+    '/api/test-login',
+    '/api/direct-setup',
+    '/api/public-setup',
+    '/api/create-admin',
+    '/api/password-hash',
+    '/api/admin-setup'
 ];
 
 const intlMiddleware = createIntlMiddleware({
     ...routing,
     localePrefix: "always",
-    defaultLocale: 'ka',
-    locales: ['ka', 'en']
+    defaultLocale: '/',
+    locales: ['ka', 'en', 'ru']
 });
 
 export async function middleware(request) {

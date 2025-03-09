@@ -1,7 +1,7 @@
 // app/api/auth/check/route.ts
 import { jwtVerify } from 'jose';
 import { NextResponse } from 'next/server';
-import { query } from "@/lib/db";
+import { connectToDatabase } from "@/lib/mongodb";
 
 // Mark this route as dynamic
 export const dynamic = 'force-dynamic';
@@ -52,19 +52,16 @@ export async function GET(request: Request) {
         // მოვახდინოთ უსაფრთხო კასტინგი
         const jwtPayload = payload as unknown as CustomJWTPayload;
 
-        const users = await query(
-            `SELECT admin_id, username FROM admin WHERE admin_id = $1`,
-            [jwtPayload.userId]
-        );
+        const { db } = await connectToDatabase();
 
-        if (!users.length) {
+        const user = await db.collection("admin").findOne({ admin_id: jwtPayload.userId }) as AdminUser | null;
+
+        if (!user) {
             return NextResponse.json(
                 { status: "error", message: "მომხმარებელი აღარ არსებობს" },
                 { status: 401 }
             );
         }
-
-        const user = users[0] as AdminUser;
 
         // ვაბრუნებთ მომხმარებლის ინფორმაციას
         return NextResponse.json({

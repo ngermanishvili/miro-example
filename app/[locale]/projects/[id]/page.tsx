@@ -1,136 +1,144 @@
-'use client';
-
-import React, { useEffect, useState, Suspense } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Project } from '@/types/project';
+import { getProjectById, mapLocale } from '@/services/projectService';
+import { SupportedLocale, ProjectLanguageData } from '@/types/project';
 import { notFound } from 'next/navigation';
-import useSWR from 'swr'; // yarn add swr ან npm install swr
 
-// მარტივი ჩამტვირთველი კომპონენტი
-const Loader = () => (
-    <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
-    </div>
-);
+export async function generateMetadata({ params }: { params: { locale: SupportedLocale; id: string } }) {
+    // await params ობიექტის გამოყენებამდე
+    const paramsObject = await params;
+    const locale = paramsObject.locale;
+    const id = paramsObject.id;
 
-// მარტივი fetcher ფუნქცია SWR-ისთვის
-const fetcher = (url: string) => fetch(url).then(res => {
-    if (!res.ok) throw new Error(res.statusText);
-    return res.json();
-});
+    const project = await getProjectById(id);
 
-interface ProjectParams {
-    id: string;
-    locale: string;
-}
-
-// Next.js 15-ის თავსებადი PageProps ტიპი
-interface ProjectDetailPageProps {
-    params: Promise<ProjectParams>;
-}
-
-export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
-    // React.use გამოვიყენოთ Promise-ის დასარეზოლვად
-    const resolvedParams = React.use(params);
-    const { id, locale } = resolvedParams;
-
-    // SWR გამოყენება მონაცემების ქეშირებისთვის და ხელახალი ჩატვირთვისთვის
-    const { data: project, error, isLoading } = useSWR<Project>(
-        `/api/projects/${id}`,
-        fetcher,
-        {
-            revalidateOnFocus: false, // არ გადატვირთო ფოკუსისას
-            dedupingInterval: 60000, // 1 წუთი
-        }
-    );
-
-    // ჩვენება დატვირთვის დროს
-    if (isLoading) {
-        return <Loader />;
+    if (!project) {
+        return {
+            title: 'Project Not Found',
+        };
     }
 
-    // ჩვენება შეცდომის დროს
-    if (error || !project) {
-        return notFound();
+    const localeKey = mapLocale(locale);
+    const projectData: ProjectLanguageData = (project[localeKey] as ProjectLanguageData) || project.ge;
+
+    return {
+        title: projectData.title,
+        description: projectData.shortDescription,
+    };
+}
+
+export default async function ProjectDetailPage({ params }: { params: { locale: SupportedLocale; id: string } }) {
+    // await params ობიექტის გამოყენებამდე
+    const paramsObject = await params;
+    const locale = paramsObject.locale;
+    const id = paramsObject.id;
+
+    const project = await getProjectById(id);
+
+    if (!project) {
+        notFound();
     }
+
+    const localeKey = mapLocale(locale);
+    const projectData: ProjectLanguageData = (project[localeKey] as ProjectLanguageData) || project.ge;
 
     return (
         <div className="h-screen w-full flex flex-col md:flex-row mt-24">
-            {/* Left Panel - ოპტიმიზებული */}
+            {/* Left Panel - პროექტის ინფორმაცია */}
             <div className="w-full md:w-[30%] h-full border-r border-gray-200 overflow-y-auto">
                 <div className="p-8">
                     <div className="pt-20 lg:pr-8 space-y-8">
-                        {/* Back Button - ოპტიმიზებული */}
+                        {/* Back Button */}
                         <Link href={`/${locale}/projects`} prefetch={true}>
                             <div className="flex items-center text-gray-600 hover:text-black mb-8 cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                 </svg>
-                                Back to Projects
+                                {locale === 'ka' ? 'პროექტებზე დაბრუნება' :
+                                    locale === 'ru' ? 'Вернуться к проектам' :
+                                        'Back to Projects'}
                             </div>
                         </Link>
 
                         {/* ძირითადი ინფორმაცია */}
                         <div className="space-y-6">
                             <div className="w-full">
-                                <h1 className="text-2xl md:text-3xl font-bold mb-2 underline underline-offset-8">{project.title}</h1>
+                                <h1 className="text-2xl md:text-3xl font-bold mb-2 underline underline-offset-8">{projectData.title}</h1>
                             </div>
 
-                            {/* Info Grid - გამარტივებული */}
+                            {/* Info Grid */}
                             <div className="space-y-2">
                                 <div className="flex gap-2">
-                                    <p className="font-semibold">LOCATION:</p>
-                                    <p>{project.location}</p>
+                                    <p className="font-semibold">
+                                        {locale === 'ka' ? 'მდებარეობა:' :
+                                            locale === 'ru' ? 'РАСПОЛОЖЕНИЕ:' :
+                                                'LOCATION:'}
+                                    </p>
+                                    <p>{projectData.location}</p>
                                 </div>
                                 <div className="flex gap-2">
-                                    <p className="font-semibold">FUNCTION:</p>
-                                    <p>{project.function}</p>
+                                    <p className="font-semibold">
+                                        {locale === 'ka' ? 'ფუნქცია:' :
+                                            locale === 'ru' ? 'ФУНКЦИЯ:' :
+                                                'FUNCTION:'}
+                                    </p>
+                                    <p>{projectData.function}</p>
                                 </div>
                                 <div className="flex gap-2">
-                                    <p className="font-semibold">AREA:</p>
-                                    <p>{project.area}</p>
+                                    <p className="font-semibold">
+                                        {locale === 'ka' ? 'ფართობი:' :
+                                            locale === 'ru' ? 'ПЛОЩАДЬ:' :
+                                                'AREA:'}
+                                    </p>
+                                    <p>{projectData.area}</p>
                                 </div>
                                 <div className="flex gap-2">
-                                    <p className="font-semibold">YEAR:</p>
-                                    <p>{project.year}</p>
+                                    <p className="font-semibold">
+                                        {locale === 'ka' ? 'წელი:' :
+                                            locale === 'ru' ? 'ГОД:' :
+                                                'YEAR:'}
+                                    </p>
+                                    <p>{projectData.year}</p>
                                 </div>
                             </div>
                         </div>
 
                         {/* აღწერა */}
                         <div className="space-y-4">
-                            <h2 className="font-semibold">DESCRIPTION:</h2>
+                            <h2 className="font-semibold">
+                                {locale === 'ka' ? 'აღწერა:' :
+                                    locale === 'ru' ? 'ОПИСАНИЕ:' :
+                                        'DESCRIPTION:'}
+                            </h2>
                             <div className="space-y-4 text-gray-700">
-                                {project.description.map((paragraph, idx) => (
+                                {projectData.description.map((paragraph, idx) => (
                                     <p key={idx}>{paragraph}</p>
                                 ))}
                             </div>
                         </div>
 
-                        {/* პროგრამა - ლეივი ჩატვირთვა */}
-                        <Suspense fallback={<div className="h-64 bg-gray-100 animate-pulse rounded-lg"></div>}>
-                            <ProgrammeSection floors={project.floors} />
-                        </Suspense>
+                        {/* პროგრამა / სართულები */}
+                        <ProgrammeSection
+                            floors={projectData.floors}
+                            locale={locale}
+                        />
                     </div>
                 </div>
             </div>
 
-            {/* Right Panel - ლეივი ჩატვირთვა სურათებისთვის */}
+            {/* Right Panel - სურათების გალერეა */}
             <div className="w-full md:w-[65%] h-full overflow-y-auto mt-4">
                 <div className="p-8 space-y-8">
-                    <Suspense fallback={<div className="h-96 bg-gray-100 animate-pulse rounded-lg"></div>}>
-                        <ImageGallery images={project.images} />
-                    </Suspense>
+                    <ImageGallery images={projectData.images} />
                 </div>
             </div>
         </div>
     );
 }
 
-// გამოყოფილი კომპონენტები ლეივი ჩატვირთვისთვის
-function ProgrammeSection({ floors }: { floors: any[] }) {
-    console.log(floors);
+// პროგრამის სექციის კომპონენტი
+function ProgrammeSection({ floors, locale }: { floors: ProjectLanguageData['floors'], locale: SupportedLocale }) {
     return (
         <div className="space-y-8">
             {floors.map((floor, floorIdx) => (
@@ -153,7 +161,11 @@ function ProgrammeSection({ floors }: { floors: any[] }) {
                     )}
                     {floor.measurements && floor.measurements.length > 0 && floor.measurements[0] !== "" && (
                         <>
-                            <h2 className="font-semibold text-xl md:text-2xl">Programme:</h2>
+                            <h2 className="font-semibold text-xl md:text-2xl">
+                                {locale === 'ka' ? 'პროგრამა:' :
+                                    locale === 'ru' ? 'Программа:' :
+                                        'Programme:'}
+                            </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {floor.measurements.map((measurement: string, idx: number) => (
                                     <div key={idx} className="text-gray-700 text-sm md:text-base">{measurement}</div>
@@ -161,13 +173,42 @@ function ProgrammeSection({ floors }: { floors: any[] }) {
                             </div>
                         </>
                     )}
+
+                    {/* დამატებული ახალი კოდი სართულის სურათების გამოსატანად */}
+                    {floor.floorImages && floor.floorImages.length > 0 && (
+                        <div className="space-y-4 mt-6">
+                            <h2 className="font-semibold text-xl md:text-2xl">
+                                {locale === 'ka' ? 'სართულის ხედები:' :
+                                    locale === 'ru' ? 'Виды этажа:' :
+                                        'Floor Views:'}
+                            </h2>
+                            <div className="grid grid-cols-1 gap-6">
+                                {floor.floorImages.map((image, imageIdx) => (
+                                    <div key={imageIdx} className="relative w-full h-80">
+                                        <Image
+                                            src={image.src}
+                                            alt={image.alt}
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, 50vw"
+                                            style={{ objectFit: "cover" }}
+                                            className="rounded-lg shadow-md"
+                                            loading="lazy"
+                                            placeholder="blur"
+                                            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFeAKJJHagMgAAAABJRU5ErkJggg=="
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             ))}
         </div>
     );
 }
 
-function ImageGallery({ images }: { images: { src: string; alt: string }[] }) {
+// სურათების გალერეის კომპონენტი
+function ImageGallery({ images }: { images: ProjectLanguageData['images'] }) {
     return (
         <>
             {images.map((image, idx) => (
@@ -179,7 +220,7 @@ function ImageGallery({ images }: { images: { src: string; alt: string }[] }) {
                         sizes="(max-width: 768px) 100vw, 65vw"
                         style={{ objectFit: "cover" }}
                         className="rounded-lg shadow-md"
-                        loading="lazy" // ლეივი ჩატვირთვა
+                        loading="lazy"
                         placeholder="blur"
                         blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFeAKJJHagMgAAAABJRU5ErkJggg=="
                     />

@@ -1,0 +1,117 @@
+<!-- public/admin-setup.html -->
+<!DOCTYPE html>
+<html lang="ka">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ადმინის დამატება</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #333;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #e9f7ef;
+        }
+
+        .manual-steps {
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ადმინის დამატება</h1>
+
+    <p>ეს გვერდი დაგეხმარებათ დათაბეისში ადმინის მომხმარებლის დამატებაში.</p>
+
+    <button onclick="createAdmin()">ადმინის შექმნა</button>
+
+    <div class="status">
+        <h3>სტატუსი:</h3>
+        <p id="status">მზადაა დასაწყებად</p>
+        <div id="details"></div>
+    </div>
+
+    <div class="manual-steps">
+        <h2>მანუალური ინსტრუქციები:</h2>
+
+        <p>თუ ავტომატური მეთოდი არ მუშაობს, გთხოვთ მიჰყევით ამ ნაბიჯებს:</p>
+
+        <h3>1. MongoDB Compass-ით:</h3>
+        <ol>
+            <li>გახსენით MongoDB Compass</li>
+            <li>დაუკავშირდით თქვენს მონაცემთა ბაზას</li>
+            <li>აირჩიეთ <code>draftwork</code> დათაბეისი</li>
+            <li>შექმენით ახალი კოლექცია სახელით <code>admin</code></li>
+            <li>კოლექციაში დაამატეთ შემდეგი დოკუმენტი:
+                <pre>
+{
+  "admin_id": 1,
+  "username": "admin",
+  "password": "05895f31dbfe1bf6fe6a077954393dbbcdb47bdc4e56fff5d1bfc13db0f9e85e"
+}
+        </pre>
+            </li>
+        </ol>
+
+        <h3>2. API-ის შექმნა:</h3>
+        <div id="recommendations"></div>
+
+        <h3>3. სისტემაში შესვლა:</h3>
+        <ul>
+            <li>მომხმარებელი: <code>admin</code></li>
+            <li>პაროლი: <code>draftwork231</code></li>
+        </ul>
+    </div>
+
+    <script src="public-setup.js"></script>
+</body>
+
+</html>

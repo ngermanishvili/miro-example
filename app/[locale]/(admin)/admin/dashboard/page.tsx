@@ -1,118 +1,121 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-// Type definitions
 interface User {
-  username: string;
-  [key: string]: any; // For any additional user properties
+    userId: number;
+    username: string;
 }
 
-interface AuthResponse {
-  status: string;
-  message?: string;
-  user?: User;
-}
+export default function AdminDashboard() {
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
-export default function Dashboard() {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [user, setUser] = useState<User | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+    useEffect(() => {
+        // მომხმარებლის ინფორმაციის გამოთხოვა
+        const fetchUserInfo = async () => {
+            try {
+                const res = await fetch("/api/auth/check", {
+                    credentials: "include", // მნიშვნელოვანია ქუქების გასაგზავნად
+                });
 
-  useEffect(() => {
-    const checkAuth = async (): Promise<void> => {
-      try {
-        // Try the standard API route first
-        const response = await fetch("/api/auth/check", {
-          credentials: "include", // Important for cookies
-        });
+                const data = await res.json();
 
-        if (!response.ok) {
-          throw new Error("Authentication failed");
+                if (data.status === "success") {
+                    setUser(data.user);
+                } else {
+                    // თუ ტოკენი არ არის ვალიდური, გადავამისამართოთ login გვერდზე
+                    router.replace("/ka/login");
+                }
+            } catch (error) {
+                console.error("Error fetching user info:", error);
+                router.replace("/ka/login");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserInfo();
+    }, [router]);
+
+    const handleLogout = async () => {
+        try {
+            // ქუქის წაშლა - შეიძლება გქონდეთ ცალკე API ამისთვის
+            document.cookie = "auth_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+            router.replace("/ka/login");
+        } catch (error) {
+            console.error("Logout error:", error);
         }
-
-        const data: AuthResponse = await response.json();
-
-        if (data.status !== "success") {
-          throw new Error(data.message || "Authentication error");
-        }
-
-        setUser(data.user || null);
-        setIsLoading(false);
-      } catch (err) {
-        console.error("Auth check error:", err);
-        setError("Authentication failed. Redirecting to login...");
-
-        // Give the user a moment to see the error before redirecting
-        setTimeout(() => {
-          router.push("/ka/login");
-        }, 1500);
-      }
     };
 
-    checkAuth();
-  }, [router]);
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="text-2xl font-semibold">იტვირთება...</div>
+            </div>
+        );
+    }
 
-  if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold">მიმდინარეობს ჩატვირთვა...</h2>
+        <div className="min-h-screen bg-gray-50">
+            <nav className="bg-white shadow">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between h-16">
+                        <div className="flex">
+                            <div className="flex-shrink-0 flex items-center">
+                                <h1 className="text-xl font-bold">ადმინ პანელი</h1>
+                            </div>
+                        </div>
+                        <div className="flex items-center">
+                            <div className="ml-4 flex items-center md:ml-6">
+                                <span className="mr-4">მოგესალმებით, {user?.username}</span>
+                                <button
+                                    onClick={handleLogout}
+                                    className="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                >
+                                    გასვლა
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <div className="px-4 py-6 sm:px-0">
+                    <div className="border-2 border-gray-200 rounded-lg p-6">
+                        <h2 className="text-2xl font-semibold mb-6">ადმინისტრატორის პანელი</h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {/* პროექტების მართვის ბარათი */}
+                            <div className="bg-white overflow-hidden shadow rounded-lg">
+                                <div className="p-5">
+                                    <div className="flex items-center">
+                                        <div className="w-0 flex-1">
+                                            <h3 className="text-lg font-medium text-gray-900">პროექტების მართვა</h3>
+                                            <p className="mt-1 text-sm text-gray-500">
+                                                პროექტების დამატება, წაშლა და რედაქტირება
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-gray-50 px-5 py-3">
+                                    <Link href="/admin/projects">
+                                        <div className="text-sm font-medium text-blue-600 hover:text-blue-500 cursor-pointer">
+                                            გადასვლა
+                                        </div>
+                                    </Link>
+                                </div>
+                            </div>
+
+                            {/* სხვა ბარათები შეგიძლიათ დაამატოთ საჭიროების მიხედვით */}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center text-red-600">
-          <h2 className="text-xl font-semibold">{error}</h2>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen p-6 bg-gray-50">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">ადმინისტრატორის პანელი</h1>
-            <div className="text-sm text-gray-600">
-              მომხმარებელი:{" "}
-              <span className="font-semibold">{user?.username}</span>
-            </div>
-          </div>
-
-          {/* Dashboard content goes here */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-blue-50 p-4 rounded-md">
-              <h2 className="text-lg font-semibold mb-2">სტატისტიკა</h2>
-              <p>აქ იქნება სტატისტიკური მონაცემები...</p>
-            </div>
-            <div className="bg-green-50 p-4 rounded-md">
-              <h2 className="text-lg font-semibold mb-2">ბოლო აქტივობები</h2>
-              <p>აქ იქნება ბოლო აქტივობები...</p>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <button
-              onClick={() => {
-                document.cookie =
-                  "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                router.push("/ka/login");
-              }}
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-            >
-              გასვლა
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 }

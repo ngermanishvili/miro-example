@@ -51,7 +51,6 @@ export async function POST(request: Request) {
                 { status: 401 }
             );
         }
-
         // პაროლის შემოწმება (SHA-256 ჰეშირებით)
         const hashedPassword: string = crypto
             .createHash('sha256')

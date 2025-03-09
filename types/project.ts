@@ -1,6 +1,28 @@
-// types/project.ts
-export interface Project {
-    id: string;
+// მხარდაჭერილი ლოკალები
+export type SupportedLocale = 'ka' | 'ru' | 'en';
+
+// სართულის სურათი
+export interface FloorImage {
+    src: string;
+    alt: string;
+}
+
+// სართული
+export interface Floor {
+    name: string;
+    image: string;
+    measurements: string[];
+    floorImages?: FloorImage[]; // დამატებული ველი სართულის სურათებისთვის
+}
+
+// პროექტის სურათი
+export interface ProjectImage {
+    src: string;
+    alt: string;
+}
+
+// პროექტის ენობრივი მონაცემები
+export interface ProjectLanguageData {
     title: string;
     shortDescription: string;
     location: string;
@@ -9,17 +31,24 @@ export interface Project {
     year: string;
     description: string[];
     floors: Floor[];
-    images: Image[];
+    images: ProjectImage[];
     thumbnail: string;
 }
 
-export interface Floor {
-    name: string;
-    image: string;
-    measurements: string[];
+// სრული პროექტის ინტერფეისი
+export interface Project {
+    id: string;
+    ge: ProjectLanguageData;
+    ru: ProjectLanguageData;
+    en: ProjectLanguageData;
+    [key: string]: ProjectLanguageData | string; // ინდექსირებული ტიპი ლოკალის დინამიურად გამოყენებისთვის
 }
 
-export interface Image {
-    src: string;
-    alt: string;
+// MongoDB დოკუმენტი (შესაძლოა შეიცავდეს დამატებით ველებს)
+export interface ProjectDocument {
+    _id?: any;
+    id: string;
+    ge: ProjectLanguageData;
+    ru: ProjectLanguageData;
+    en: ProjectLanguageData;
 }
