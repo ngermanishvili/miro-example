@@ -7,9 +7,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import useSWR from 'swr';
+import { motion, AnimatePresence } from 'framer-motion';
 import Hero from '../../components/Hero';
-import Footer from '@/components/Footer';
 import { Project, ProjectLanguageData } from '@/types/project';
+import LoadingAnimation from '@/components/LoadingAnimation';
 
 // Define valid locale types
 type ValidLocale = 'ka' | 'ru' | 'en';
@@ -72,6 +73,9 @@ function ProjectCard({ project, locale }: { project: Project; locale: string }) 
 }
 
 const Home: NextPage = () => {
+  // Set initial loading state to true - will be updated in useEffect
+  const [loading, setLoading] = useState(true);
+
   // Use Next.js pathname hook for SSR-compatible path detection
   const pathname = usePathname();
 
@@ -83,6 +87,55 @@ const Home: NextPage = () => {
     raw: 'en',
     typed: 'en'
   });
+
+  // Detect if this is a first load or a navigation
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        // Get the current timestamp
+        const currentTime = new Date().getTime();
+
+        // Get the timestamp of the last visit
+        const lastVisitTime = localStorage.getItem('lastVisitTime');
+        const firstLoad = localStorage.getItem('firstLoadComplete');
+
+        // If firstLoad doesn't exist or it's been more than 1 hour since last visit,
+        // treat this as a fresh visit and show the animation
+        if (!firstLoad || !lastVisitTime || (currentTime - parseInt(lastVisitTime)) > 60 * 60 * 1000) {
+          setLoading(true);
+          localStorage.setItem('firstLoadComplete', 'true');
+        } else {
+          // This is either a page navigation or a reload within the time window
+          setLoading(false);
+        }
+
+        // Update the last visit time
+        localStorage.setItem('lastVisitTime', currentTime.toString());
+
+        // This helps detect page refresh vs navigation
+        // Using the beforeunload event to detect when the page is being unloaded
+        window.addEventListener('beforeunload', () => {
+          // Setting a flag that this was a page unload (potential reload)
+          sessionStorage.setItem('pageWasUnloaded', 'true');
+        });
+
+        // Check if this is a page reload
+        const pageWasUnloaded = sessionStorage.getItem('pageWasUnloaded');
+        if (pageWasUnloaded) {
+          // This is likely a page reload, not a navigation
+          // We can choose to show the animation or not on reload
+          // For now, we're showing it on reload too by not changing the loading state
+
+          // Clear the flag
+          sessionStorage.removeItem('pageWasUnloaded');
+        }
+      } catch (error) {
+        // In case localStorage is not available, default to showing the animation
+        console.error('Error with localStorage:', error);
+        setLoading(true);
+      }
+    }
+  }, []);
 
   // Set the locale after component mounts to avoid hydration mismatch
   useEffect(() => {
@@ -127,50 +180,62 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Miro Template</title>
+        <title>DRAFT WORK PROJECTS</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Hero />
+      <AnimatePresence>
+        {loading && <LoadingAnimation onComplete={() => setLoading(false)} />}
+      </AnimatePresence>
 
-      <section id="projects" className="container mx-auto px-4 py-16">
-        <div className="flex justify-end mb-8">
-          <div className="text-right">
-            <h2 className="text-3xl mb-4 font-bold text-gray-900">
-              {pageTitle[localeState.typed]}
-            </h2>
-            <h3 className="text-xl text-gray-600">
-              {latestCreations[localeState.typed]}
-            </h3>
-          </div>
-        </div>
+      <AnimatePresence>
+        {!loading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Hero />
 
-        {isLoading ? (
-          <div className="flex justify-center items-center h-32">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
-          </div>
-        ) : error ? (
-          <div className="flex justify-center items-center h-32 text-red-500">
-            <div>
-              <p className="font-bold">Error loading projects:</p>
-              <p>{error.message}</p>
-            </div>
-          </div>
-        ) : projects.length === 0 ? (
-          <div className="flex justify-center items-center h-32">
-            <p className="text-gray-600">No projects found. Please check your API endpoint.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project: Project) => (
-              <ProjectCard key={project.id} project={project} locale={localeState.raw} />
-            ))}
-          </div>
+            <section id="projects" className="container mx-auto px-4 py-16">
+              <div className="flex justify-end mb-8">
+                <div className="text-right">
+                  <h2 className="text-3xl mb-4 font-bold text-gray-900">
+                    {pageTitle[localeState.typed]}
+                  </h2>
+                  <h3 className="text-xl text-gray-600">
+                    {latestCreations[localeState.typed]}
+                  </h3>
+                </div>
+              </div>
+
+              {isLoading ? (
+                <div className="flex justify-center items-center h-32">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+                </div>
+              ) : error ? (
+                <div className="flex justify-center items-center h-32 text-red-500">
+                  <div>
+                    <p className="font-bold">Error loading projects:</p>
+                    <p>{error.message}</p>
+                  </div>
+                </div>
+              ) : projects.length === 0 ? (
+                <div className="flex justify-center items-center h-32">
+                  <p className="text-gray-600">No projects found. Please check your API endpoint.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {projects.map((project: Project) => (
+                    <ProjectCard key={project.id} project={project} locale={localeState.raw} />
+                  ))}
+                </div>
+              )}
+            </section>
+          </motion.div>
         )}
-      </section>
-
-      <Footer />
+      </AnimatePresence>
     </>
   );
 };
