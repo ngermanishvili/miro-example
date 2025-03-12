@@ -1,10 +1,17 @@
 "use client";
 
-import React, { useEffect, useState, use } from "react";
+import React, {
+  useEffect,
+  useState,
+  use,
+  useRef,
+  ChangeEvent,
+  ReactElement,
+} from "react";
 import { Project, ProjectLanguageData } from "@/types/project";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import { CldUploadWidget } from "next-cloudinary";
 interface ProjectEditPageProps {
   params: Promise<{
     id: string;
@@ -16,9 +23,20 @@ interface Floor {
   name: string;
   image: string;
   measurements: string[];
-  floorImages: { src: string; alt: string }[];
+  floorImages: { src: string; alt: string }[] | undefined;
 }
 
+interface UploadingState {
+  [key: string]: boolean;
+}
+
+// Type for file input refs
+interface FileInputRefs {
+  thumbnail: React.RefObject<HTMLInputElement | null>;
+  projectImage: React.RefObject<HTMLInputElement | null>;
+  floorImage: React.RefObject<HTMLInputElement | null>;
+  floorGalleryImage: React.RefObject<HTMLInputElement | null>;
+}
 const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
   const resolvedParams = use(params);
   const { id } = resolvedParams;
@@ -28,6 +46,168 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const [uploadingType, setUploadingType] = useState<string | null>(null);
+  // Add a new state to track uploads in progress by their unique keys
+  const [activeUploads, setActiveUploads] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  // 3. Add this function to handle successful uploads
+  const handleUploadSuccess = (
+    result: any,
+    uploadType: string,
+    index?: number,
+    floorIndex?: number,
+    imageIndex?: number
+  ) => {
+    // Get the secure URL from the upload result
+    let secureUrl;
+
+    if (result.info && result.info.secure_url) {
+      secureUrl = result.info.secure_url;
+    } else if (result.secure_url) {
+      secureUrl = result.secure_url;
+    } else if (typeof result === "string") {
+      secureUrl = result;
+    } else {
+      console.error("Could not find URL in upload result:", result);
+      setError("Image upload succeeded but returned an unexpected format.");
+      return;
+    }
+
+    console.log(`Setting ${uploadType} to URL:`, secureUrl);
+
+    // If project is null, we can't update it
+    if (!project) {
+      setError("Cannot update image: project data is not loaded.");
+      return;
+    }
+
+    // Handle each upload type directly without helper functions
+    if (uploadType === "thumbnail") {
+      setProject((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          ge: { ...prev.ge, thumbnail: secureUrl },
+          en: { ...prev.en, thumbnail: secureUrl },
+          ru: { ...prev.ru, thumbnail: secureUrl },
+        };
+      });
+    } else if (uploadType === "projectImage" && typeof index === "number") {
+      setProject((prev) => {
+        if (!prev) return prev;
+        const newImages = [...prev.ge.images];
+        if (newImages[index]) {
+          newImages[index] = { ...newImages[index], src: secureUrl };
+        }
+        return {
+          ...prev,
+          ge: { ...prev.ge, images: newImages },
+        };
+      });
+    } else if (uploadType === "floorImage" && typeof floorIndex === "number") {
+      setProject((prev) => {
+        if (!prev) return prev;
+        const newFloors = [...prev.ge.floors];
+        if (newFloors[floorIndex]) {
+          newFloors[floorIndex] = {
+            ...newFloors[floorIndex],
+            image: secureUrl,
+          };
+        }
+        return {
+          ...prev,
+          ge: { ...prev.ge, floors: newFloors },
+        };
+      });
+    } else if (
+      uploadType === "floorGalleryImage" &&
+      typeof floorIndex === "number" &&
+      typeof imageIndex === "number"
+    ) {
+      setProject((prev) => {
+        if (!prev) return prev;
+        const newFloors = [...prev.ge.floors];
+        if (newFloors[floorIndex] && newFloors[floorIndex].floorImages) {
+          const newFloorImages = [...newFloors[floorIndex].floorImages];
+          if (newFloorImages[imageIndex]) {
+            newFloorImages[imageIndex] = {
+              ...newFloorImages[imageIndex],
+              src: secureUrl,
+            };
+          }
+          newFloors[floorIndex] = {
+            ...newFloors[floorIndex],
+            floorImages: newFloorImages,
+          };
+        }
+        return {
+          ...prev,
+          ge: { ...prev.ge, floors: newFloors },
+        };
+      });
+    }
+
+    // Clear uploading state
+    const uploadKey = getUploadKey(uploadType, index, floorIndex, imageIndex);
+    setActiveUploads((prev) => {
+      const newState = { ...prev };
+      delete newState[uploadKey];
+      return newState;
+    });
+  };
+
+  // Helper to generate a unique key for each upload
+  const getUploadKey = (
+    uploadType: string,
+    index?: number,
+    floorIndex?: number,
+    imageIndex?: number
+  ): string => {
+    if (uploadType === "thumbnail") return "thumbnail";
+    if (uploadType === "projectImage" && typeof index === "number")
+      return `projectImage_${index}`;
+    if (uploadType === "floorImage" && typeof floorIndex === "number")
+      return `floorImage_${floorIndex}`;
+    if (
+      uploadType === "floorGalleryImage" &&
+      typeof floorIndex === "number" &&
+      typeof imageIndex === "number"
+    )
+      return `floorGalleryImage_${floorIndex}_${imageIndex}`;
+    return `${uploadType}_unknown`;
+  };
+
+  // Track start of upload
+  const startUpload = (
+    uploadType: string,
+    index?: number,
+    floorIndex?: number,
+    imageIndex?: number
+  ) => {
+    const key = getUploadKey(uploadType, index, floorIndex, imageIndex);
+    setActiveUploads((prev) => ({ ...prev, [key]: true }));
+  };
+
+  // Check if upload is in progress
+  const isUploading = (
+    uploadType: string,
+    index?: number,
+    floorIndex?: number,
+    imageIndex?: number
+  ): boolean => {
+    const key = getUploadKey(uploadType, index, floorIndex, imageIndex);
+    return !!activeUploads[key];
+  };
+
+  const fileInputRefs: FileInputRefs = {
+    thumbnail: useRef<HTMLInputElement | null>(null),
+    projectImage: useRef<HTMLInputElement | null>(null),
+    floorImage: useRef<HTMLInputElement | null>(null),
+    floorGalleryImage: useRef<HTMLInputElement | null>(null),
+  };
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -427,6 +607,314 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
     }
   };
 
+  // Function to trigger file input click
+  const triggerFileInput = (refKey: keyof FileInputRefs): void => {
+    if (fileInputRefs[refKey].current) {
+      fileInputRefs[refKey].current.click();
+    }
+  };
+  const renderThumbnailUpload = (): ReactElement => (
+    <div>
+      <label className="block text-gray-700 font-bold mb-2" htmlFor="thumbnail">
+        სათაური სურათი (Thumbnail)
+      </label>
+      <div className="flex space-x-2 items-center">
+        <input
+          type="text"
+          id="thumbnail"
+          value={project?.ge.thumbnail || ""}
+          onChange={(e) => handleThumbnailChange(e.target.value)}
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+        <CldUploadWidget
+          uploadPreset="draftwork123" // Create this preset in your Cloudinary dashboard
+          onSuccess={(result) => handleUploadSuccess(result, "thumbnail")}
+          options={{
+            maxFiles: 1,
+            resourceType: "image",
+          }}
+          onOpen={() => startUpload("thumbnail")}
+        >
+          {({ open }) => {
+            return (
+              <button
+                type="button"
+                onClick={() => open()}
+                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded flex-shrink-0"
+                disabled={isUploading("thumbnail")}
+              >
+                {isUploading("thumbnail") ? "იტვირთება..." : "ატვირთვა"}
+              </button>
+            );
+          }}
+        </CldUploadWidget>
+      </div>
+      {project?.ge.thumbnail && (
+        <div className="mt-2 max-w-xs">
+          <img
+            src={project.ge.thumbnail}
+            alt="Thumbnail preview"
+            className="max-h-32 object-contain border rounded"
+          />
+        </div>
+      )}
+    </div>
+  );
+
+  // 2. For project images
+  const renderImageUpload = (
+    image: { src: string; alt: string },
+    index: number
+  ): ReactElement => (
+    <div key={index} className="flex items-center space-x-4 p-4 border rounded">
+      <div className="w-24 h-24 bg-gray-100 overflow-hidden rounded flex-shrink-0">
+        <img
+          src={image.src}
+          alt={image.alt}
+          className="object-cover w-full h-full"
+        />
+      </div>
+      <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-gray-700 font-bold mb-2">
+            სურათის მისამართი
+          </label>
+          <div className="flex space-x-2 items-center">
+            <input
+              type="text"
+              value={image.src}
+              onChange={(e) => handleImageChange(index, "src", e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+            <CldUploadWidget
+              uploadPreset="draftwork123"
+              onSuccess={(result) =>
+                handleUploadSuccess(result, "projectImage", index)
+              }
+              options={{
+                maxFiles: 1,
+                resourceType: "image",
+              }}
+              onOpen={() => startUpload("projectImage", index)}
+            >
+              {({ open }) => {
+                return (
+                  <button
+                    type="button"
+                    onClick={() => open()}
+                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded flex-shrink-0"
+                    disabled={isUploading("projectImage", index)}
+                  >
+                    {isUploading("projectImage", index) ? "..." : "ატვირთვა"}
+                  </button>
+                );
+              }}
+            </CldUploadWidget>
+          </div>
+        </div>
+        <div>
+          <label className="block text-gray-700 font-bold mb-2">
+            სურათის აღწერა
+          </label>
+          <input
+            type="text"
+            value={image.alt}
+            onChange={(e) => handleImageChange(index, "alt", e.target.value)}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
+      </div>
+      <button
+        onClick={() => removeImage(index)}
+        className="bg-red-500 hover:bg-red-600 text-white p-2 rounded"
+      >
+        X
+      </button>
+    </div>
+  );
+
+  // 3. For floor main image
+  const renderFloorImageUpload = (
+    floor: Floor,
+    floorIndex: number
+  ): ReactElement => (
+    <div>
+      <label className="block text-gray-700 font-bold mb-2">
+        სურათის მისამართი
+      </label>
+      <div className="flex space-x-2 items-center">
+        <input
+          type="text"
+          value={floor.image}
+          onChange={(e) =>
+            handleFloorChange(floorIndex, "image", e.target.value)
+          }
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+        <CldUploadWidget
+          uploadPreset="draftwork123"
+          onSuccess={(result) =>
+            handleUploadSuccess(result, "floorImage", undefined, floorIndex)
+          }
+          options={{
+            maxFiles: 1,
+            resourceType: "image",
+          }}
+          onOpen={() => startUpload("floorImage", undefined, floorIndex)}
+        >
+          {({ open }) => {
+            return (
+              <button
+                type="button"
+                onClick={() => open()}
+                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded flex-shrink-0"
+                disabled={isUploading("floorImage", undefined, floorIndex)}
+              >
+                {isUploading("floorImage", undefined, floorIndex)
+                  ? "იტვირთება..."
+                  : "ატვირთვა"}
+              </button>
+            );
+          }}
+        </CldUploadWidget>
+      </div>
+      {floor.image && (
+        <div className="mt-2 max-w-xs">
+          <img
+            src={floor.image}
+            alt="Floor plan"
+            className="max-h-32 object-contain border rounded"
+          />
+        </div>
+      )}
+    </div>
+  );
+
+  // 4. For floor gallery images
+  const renderFloorGalleryImageUpload = (
+    floor: Floor,
+    floorIndex: number,
+    image: { src: string; alt: string },
+    imageIndex: number
+  ): ReactElement => (
+    <div key={imageIndex} className="flex items-center mb-2">
+      <div className="flex-grow grid grid-cols-3 gap-2">
+        <div className="col-span-2 flex items-center space-x-2">
+          <input
+            type="text"
+            value={image.src}
+            onChange={(e) =>
+              handleFloorImageChange(
+                floorIndex,
+                imageIndex,
+                "src",
+                e.target.value
+              )
+            }
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+          <CldUploadWidget
+            uploadPreset="draftwork123"
+            onSuccess={(result) =>
+              handleUploadSuccess(
+                result,
+                "floorGalleryImage",
+                undefined,
+                floorIndex,
+                imageIndex
+              )
+            }
+            options={{
+              maxFiles: 1,
+              resourceType: "image",
+            }}
+            onOpen={() =>
+              startUpload(
+                "floorGalleryImage",
+                undefined,
+                floorIndex,
+                imageIndex
+              )
+            }
+          >
+            {({ open }) => {
+              return (
+                <button
+                  type="button"
+                  onClick={() => open()}
+                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded flex-shrink-0"
+                  disabled={isUploading(
+                    "floorGalleryImage",
+                    undefined,
+                    floorIndex,
+                    imageIndex
+                  )}
+                >
+                  {isUploading(
+                    "floorGalleryImage",
+                    undefined,
+                    floorIndex,
+                    imageIndex
+                  )
+                    ? "..."
+                    : "ატვირთვა"}
+                </button>
+              );
+            }}
+          </CldUploadWidget>
+        </div>
+        <input
+          type="text"
+          value={image.alt}
+          onChange={(e) =>
+            handleFloorImageChange(
+              floorIndex,
+              imageIndex,
+              "alt",
+              e.target.value
+            )
+          }
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          placeholder="Alt text"
+        />
+      </div>
+      {image.src && (
+        <div className="w-12 h-12 mx-2 bg-gray-100 overflow-hidden rounded flex-shrink-0">
+          <img
+            src={image.src}
+            alt={image.alt || "Floor image"}
+            className="object-cover w-full h-full"
+          />
+        </div>
+      )}
+      <button
+        onClick={() => removeFloorImage(floorIndex, imageIndex)}
+        className="ml-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded"
+      >
+        X
+      </button>
+    </div>
+  );
+
+  // Use direct type assertion for render functions
+  const safeRenderFloorImageUpload = (
+    floor: any,
+    floorIndex: number
+  ): ReactElement => renderFloorImageUpload(floor as Floor, floorIndex);
+
+  const safeRenderFloorGalleryImageUpload = (
+    floor: any,
+    floorIndex: number,
+    image: { src: string; alt: string },
+    imageIndex: number
+  ): ReactElement =>
+    renderFloorGalleryImageUpload(
+      floor as Floor,
+      floorIndex,
+      image,
+      imageIndex
+    );
+
   if (loading) {
     return (
       <div className="p-8">
@@ -521,21 +1009,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
               ID ცვლილებას არ ექვემდებარება
             </p>
           </div>
-          <div>
-            <label
-              className="block text-gray-700 font-bold mb-2"
-              htmlFor="thumbnail"
-            >
-              სათაური სურათი (Thumbnail)
-            </label>
-            <input
-              type="text"
-              id="thumbnail"
-              value={project.ge.thumbnail}
-              onChange={(e) => handleThumbnailChange(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-          </div>
+          {renderThumbnailUpload()}
         </div>
       </div>
 
@@ -886,60 +1360,15 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
       <div className="bg-white shadow-md rounded-lg p-6 mb-8">
         <h2 className="text-xl font-bold mb-4">სურათების რედაქტირება</h2>
         <div className="space-y-4">
-          {project.ge.images.map((image, index) => (
-            <div
-              key={index}
-              className="flex items-center space-x-4 p-4 border rounded"
-            >
-              <div className="w-24 h-24 bg-gray-100 overflow-hidden rounded flex-shrink-0">
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 font-bold mb-2">
-                    სურათის მისამართი
-                  </label>
-                  <input
-                    type="text"
-                    value={image.src}
-                    onChange={(e) =>
-                      handleImageChange(index, "src", e.target.value)
-                    }
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-bold mb-2">
-                    სურათის აღწერა
-                  </label>
-                  <input
-                    type="text"
-                    value={image.alt}
-                    onChange={(e) =>
-                      handleImageChange(index, "alt", e.target.value)
-                    }
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                </div>
-              </div>
-              <button
-                onClick={() => removeImage(index)}
-                className="bg-red-500 hover:bg-red-600 text-white p-2 rounded"
-              >
-                X
-              </button>
-            </div>
-          ))}
-          <button
+          {project.ge.images.map((image, index) =>
+            renderImageUpload(image, index)
+          )}
+          {/* <button
             onClick={addImage}
             className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
           >
             სურათის დამატება
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -966,14 +1395,62 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
                 <label className="block text-gray-700 font-bold mb-2">
                   სურათის მისამართი
                 </label>
-                <input
-                  type="text"
-                  value={floor.image}
-                  onChange={(e) =>
-                    handleFloorChange(floorIndex, "image", e.target.value)
-                  }
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
+                <div className="flex space-x-2 items-center">
+                  <input
+                    type="text"
+                    value={floor.image}
+                    onChange={(e) =>
+                      handleFloorChange(floorIndex, "image", e.target.value)
+                    }
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                  <CldUploadWidget
+                    uploadPreset="draftwork123"
+                    onSuccess={(result) =>
+                      handleUploadSuccess(
+                        result,
+                        "floorImage",
+                        undefined,
+                        floorIndex
+                      )
+                    }
+                    options={{
+                      maxFiles: 1,
+                      resourceType: "image",
+                    }}
+                    onOpen={() =>
+                      startUpload("floorImage", undefined, floorIndex)
+                    }
+                  >
+                    {({ open }) => {
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => open()}
+                          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded flex-shrink-0"
+                          disabled={isUploading(
+                            "floorImage",
+                            undefined,
+                            floorIndex
+                          )}
+                        >
+                          {isUploading("floorImage", undefined, floorIndex)
+                            ? "იტვირთება..."
+                            : "ატვირთვა"}
+                        </button>
+                      );
+                    }}
+                  </CldUploadWidget>
+                </div>
+                {floor.image && (
+                  <div className="mt-2 max-w-xs">
+                    <img
+                      src={floor.image}
+                      alt="Floor plan"
+                      className="max-h-32 object-contain border rounded"
+                    />
+                  </div>
+                )}
               </div>
             </div>
             <div className="mb-4">
@@ -1015,42 +1492,14 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
               <label className="block text-gray-700 font-bold mb-2">
                 სართულის სურათები
               </label>
-              {(floor.floorImages || []).map((image, imageIndex) => (
-                <div key={imageIndex} className="flex items-center mb-2">
-                  <input
-                    type="text"
-                    value={image.src}
-                    onChange={(e) =>
-                      handleFloorImageChange(
-                        floorIndex,
-                        imageIndex,
-                        "src",
-                        e.target.value
-                      )
-                    }
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                  <input
-                    type="text"
-                    value={image.alt}
-                    onChange={(e) =>
-                      handleFloorImageChange(
-                        floorIndex,
-                        imageIndex,
-                        "alt",
-                        e.target.value
-                      )
-                    }
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                  <button
-                    onClick={() => removeFloorImage(floorIndex, imageIndex)}
-                    className="ml-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded"
-                  >
-                    X
-                  </button>
-                </div>
-              ))}
+              {(floor.floorImages || []).map((image, imageIndex) =>
+                safeRenderFloorGalleryImageUpload(
+                  floor,
+                  floorIndex,
+                  image,
+                  imageIndex
+                )
+              )}
               <button
                 onClick={() => addFloorImage(floorIndex)}
                 className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
