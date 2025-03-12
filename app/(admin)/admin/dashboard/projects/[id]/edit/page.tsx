@@ -21,9 +21,9 @@ interface ProjectEditPageProps {
 // Define the Floor type
 interface Floor {
   name: string;
-  image: string;
+  image: string | null;
   measurements: string[];
-  floorImages: { src: string; alt: string }[] | undefined;
+  floorImages: { src: string | null; alt: string }[] | undefined;
 }
 
 interface UploadingState {
@@ -230,18 +230,18 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
                 floors: [
                   {
                     name: "",
-                    image: "",
+                    image: null,
                     measurements: [""],
-                    floorImages: [{ src: "", alt: "" }],
+                    floorImages: [{ src: null, alt: "" }],
                   },
                 ],
                 images: [
                   {
-                    src: "",
+                    src: null,
                     alt: "",
                   },
                 ],
-                thumbnail: "",
+                thumbnail: null,
               },
               en: {
                 title: "",
@@ -254,18 +254,18 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
                 floors: [
                   {
                     name: "",
-                    image: "",
+                    image: null,
                     measurements: [""],
-                    floorImages: [{ src: "", alt: "" }],
+                    floorImages: [{ src: null, alt: "" }],
                   },
                 ],
                 images: [
                   {
-                    src: "",
+                    src: null,
                     alt: "",
                   },
                 ],
-                thumbnail: "",
+                thumbnail: null,
               },
               ru: {
                 title: "",
@@ -278,18 +278,18 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
                 floors: [
                   {
                     name: "",
-                    image: "",
+                    image: null,
                     measurements: [""],
-                    floorImages: [{ src: "", alt: "" }],
+                    floorImages: [{ src: null, alt: "" }],
                   },
                 ],
                 images: [
                   {
-                    src: "",
+                    src: null,
                     alt: "",
                   },
                 ],
-                thumbnail: "",
+                thumbnail: null,
               },
             };
             setProject(emptyProject);
@@ -328,7 +328,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
     });
   };
 
-  const handleThumbnailChange = (value: string) => {
+  const handleThumbnailChange = (value: string | null) => {
     if (!project) return;
 
     // Update thumbnail in all language objects to maintain consistency
@@ -401,7 +401,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
     const updatedImages = [...project.ge.images];
     updatedImages[index] = {
       ...updatedImages[index],
-      [field]: value,
+      [field]: field === "src" ? value || null : value,
     };
 
     setProject({
@@ -420,7 +420,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
       ...project,
       ge: {
         ...project.ge,
-        images: [...project.ge.images, { src: "", alt: "" }],
+        images: [...project.ge.images, { src: null, alt: "" }],
       },
     });
   };
@@ -487,7 +487,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
     const updatedFloors = [...project.ge.floors];
     updatedFloors[index] = {
       ...updatedFloors[index],
-      [field]: value,
+      [field]: field === "image" ? value || null : value,
     };
 
     setProject({
@@ -615,12 +615,12 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
 
     const updatedFloors = [...project.ge.floors];
     const updatedFloorImages = [
-      ...(updatedFloors[floorIndex]?.floorImages || [{ src: "", alt: "" }]),
+      ...(updatedFloors[floorIndex]?.floorImages || [{ src: null, alt: "" }]),
     ];
 
     updatedFloorImages[imageIndex] = {
       ...updatedFloorImages[imageIndex],
-      [field]: value,
+      [field]: field === "src" ? value || null : value,
     };
 
     updatedFloors[floorIndex] = {
@@ -647,7 +647,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
         ...updatedFloors[floorIndex],
         floorImages: [
           ...(updatedFloors[floorIndex].floorImages || []),
-          { src: "", alt: "" },
+          { src: null, alt: "" },
         ],
       };
 
@@ -701,7 +701,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
           type="text"
           id="thumbnail"
           value={project?.ge.thumbnail || ""}
-          onChange={(e) => handleThumbnailChange(e.target.value)}
+          onChange={(e) => handleThumbnailChange(e.target.value || null)}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
         <CldUploadWidget
@@ -741,16 +741,18 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
 
   // 2. For project images
   const renderImageUpload = (
-    image: { src: string; alt: string },
+    image: { src: string | null; alt: string },
     index: number
   ): ReactElement => (
     <div key={index} className="flex items-center space-x-4 p-4 border rounded">
       <div className="w-24 h-24 bg-gray-100 overflow-hidden rounded flex-shrink-0">
-        <img
-          src={image.src}
-          alt={image.alt}
-          className="object-cover w-full h-full"
-        />
+        {image.src && (
+          <img
+            src={image.src}
+            alt={image.alt}
+            className="object-cover w-full h-full"
+          />
+        )}
       </div>
       <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -760,7 +762,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
           <div className="flex space-x-2 items-center">
             <input
               type="text"
-              value={image.src}
+              value={image.src || ""}
               onChange={(e) => handleImageChange(index, "src", e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -823,7 +825,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
       <div className="flex space-x-2 items-center">
         <input
           type="text"
-          value={floor.image}
+          value={floor.image || ""}
           onChange={(e) =>
             handleFloorChange(floorIndex, "image", e.target.value)
           }
@@ -872,7 +874,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
   const renderFloorGalleryImageUpload = (
     floor: Floor,
     floorIndex: number,
-    image: { src: string; alt: string },
+    image: { src: string | null; alt: string },
     imageIndex: number
   ): ReactElement => (
     <div key={imageIndex} className="flex items-center mb-2">
@@ -880,7 +882,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
         <div className="col-span-2 flex items-center space-x-2">
           <input
             type="text"
-            value={image.src}
+            value={image.src || ""}
             onChange={(e) =>
               handleFloorImageChange(
                 floorIndex,
@@ -943,7 +945,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
         </div>
         <input
           type="text"
-          value={image.alt}
+          value={image.alt || ""}
           onChange={(e) =>
             handleFloorImageChange(
               floorIndex,
@@ -983,7 +985,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
   const safeRenderFloorGalleryImageUpload = (
     floor: any,
     floorIndex: number,
-    image: { src: string; alt: string },
+    image: { src: string | null; alt: string },
     imageIndex: number
   ): ReactElement =>
     renderFloorGalleryImageUpload(
@@ -1476,7 +1478,7 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
                 <div className="flex space-x-2 items-center">
                   <input
                     type="text"
-                    value={floor.image}
+                    value={floor.image || ""}
                     onChange={(e) =>
                       handleFloorChange(floorIndex, "image", e.target.value)
                     }

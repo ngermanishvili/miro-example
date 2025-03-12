@@ -5,12 +5,96 @@ import React, { useState } from "react";
 import { Project, ProjectLanguageData } from "@/types/project";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { CldUploadWidget } from "next-cloudinary";
 
 const NewProjectPage = () => {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [projectId, setProjectId] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [activeUploads, setActiveUploads] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  // Helper to generate a unique key for each upload
+  const getUploadKey = (uploadType: string, index?: number): string => {
+    if (uploadType === "thumbnail") return "thumbnail";
+    if (uploadType === "projectImage" && typeof index === "number")
+      return `projectImage_${index}`;
+    return `${uploadType}_unknown`;
+  };
+
+  // Track start of upload
+  const startUpload = (uploadType: string, index?: number) => {
+    const key = getUploadKey(uploadType, index);
+    setActiveUploads((prev) => ({ ...prev, [key]: true }));
+  };
+
+  // Check if upload is in progress
+  const isUploading = (uploadType: string, index?: number): boolean => {
+    const key = getUploadKey(uploadType, index);
+    return !!activeUploads[key];
+  };
+
+  // Handle successful uploads
+  const handleUploadSuccess = (
+    result: any,
+    uploadType: string,
+    index?: number
+  ) => {
+    // Get the secure URL from the upload result
+    let secureUrl;
+
+    if (result.info && result.info.secure_url) {
+      secureUrl = result.info.secure_url;
+    } else if (result.secure_url) {
+      secureUrl = result.secure_url;
+    } else if (typeof result === "string") {
+      secureUrl = result;
+    } else {
+      console.error("Could not find URL in upload result:", result);
+      setError("Image upload succeeded but returned an unexpected format.");
+      return;
+    }
+
+    console.log(`Setting ${uploadType} to URL:`, secureUrl);
+
+    // Update project with the new image URL
+    if (uploadType === "thumbnail") {
+      setProject((prev) => ({
+        ...prev,
+        ge: { ...prev.ge, thumbnail: secureUrl },
+        en: { ...prev.en, thumbnail: secureUrl },
+        ru: { ...prev.ru, thumbnail: secureUrl },
+      }));
+    } else if (uploadType === "projectImage" && typeof index === "number") {
+      setProject((prev) => {
+        const newProject = { ...prev };
+        // Update in all languages
+        newProject.ge.images[index] = {
+          ...newProject.ge.images[index],
+          src: secureUrl,
+        };
+        newProject.en.images[index] = {
+          ...newProject.en.images[index],
+          src: secureUrl,
+        };
+        newProject.ru.images[index] = {
+          ...newProject.ru.images[index],
+          src: secureUrl,
+        };
+        return newProject;
+      });
+    }
+
+    // Clear uploading state
+    const uploadKey = getUploadKey(uploadType, index);
+    setActiveUploads((prev) => {
+      const newState = { ...prev };
+      delete newState[uploadKey];
+      return newState;
+    });
+  };
 
   // საწყისი პროექტის შაბლონი
   const emptyProject: Project = {
@@ -26,17 +110,17 @@ const NewProjectPage = () => {
       floors: [
         {
           name: "",
-          image: "",
+          image: null,
           measurements: [""],
         },
       ],
       images: [
         {
-          src: "",
+          src: null,
           alt: "",
         },
       ],
-      thumbnail: "",
+      thumbnail: null,
     },
     en: {
       title: "",
@@ -49,17 +133,17 @@ const NewProjectPage = () => {
       floors: [
         {
           name: "",
-          image: "",
+          image: null,
           measurements: [""],
         },
       ],
       images: [
         {
-          src: "",
+          src: null,
           alt: "",
         },
       ],
-      thumbnail: "",
+      thumbnail: null,
     },
     ru: {
       title: "",
@@ -72,17 +156,17 @@ const NewProjectPage = () => {
       floors: [
         {
           name: "",
-          image: "",
+          image: null,
           measurements: [""],
         },
       ],
       images: [
         {
-          src: "",
+          src: null,
           alt: "",
         },
       ],
-      thumbnail: "",
+      thumbnail: null,
     },
   };
 
@@ -147,6 +231,40 @@ const NewProjectPage = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  // Function to handle image alt text changes
+  const handleImageAltChange = (index: number, value: string) => {
+    setProject((prev) => {
+      const newProject = { ...prev };
+      // Update in all languages
+      newProject.ge.images[index] = {
+        ...newProject.ge.images[index],
+        alt: value,
+      };
+      newProject.en.images[index] = {
+        ...newProject.en.images[index],
+        alt: value,
+      };
+      newProject.ru.images[index] = {
+        ...newProject.ru.images[index],
+        alt: value,
+      };
+      return newProject;
+    });
+  };
+
+  // Function to add a new image
+  const addImage = () => {
+    setProject((prev) => {
+      const newImage = { src: null, alt: "" };
+      return {
+        ...prev,
+        ge: { ...prev.ge, images: [...prev.ge.images, newImage] },
+        en: { ...prev.en, images: [...prev.en.images, newImage] },
+        ru: { ...prev.ru, images: [...prev.ru.images, newImage] },
+      };
+    });
   };
 
   return (
@@ -422,33 +540,151 @@ const NewProjectPage = () => {
                 <label className="block text-gray-700 font-bold mb-2">
                   თამბნეილის მისამართი
                 </label>
-                <input
-                  type="text"
-                  value={project.ge.thumbnail}
-                  onChange={(e) => {
-                    const thumbnail = e.target.value;
-                    setProject((prev) => ({
-                      ...prev,
-                      ge: {
-                        ...prev.ge,
-                        thumbnail,
-                      },
-                      en: {
-                        ...prev.en,
-                        thumbnail,
-                      },
-                      ru: {
-                        ...prev.ru,
-                        thumbnail,
-                      },
-                    }));
-                  }}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="მაგ: /assets/thumbnail.jpg"
-                />
+                <div className="flex space-x-2 items-center">
+                  <input
+                    type="text"
+                    value={project.ge.thumbnail || ""}
+                    onChange={(e) => {
+                      const thumbnail = e.target.value || null;
+                      setProject((prev) => ({
+                        ...prev,
+                        ge: {
+                          ...prev.ge,
+                          thumbnail,
+                        },
+                        en: {
+                          ...prev.en,
+                          thumbnail,
+                        },
+                        ru: {
+                          ...prev.ru,
+                          thumbnail,
+                        },
+                      }));
+                    }}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="მაგ: /assets/thumbnail.jpg"
+                  />
+                  <CldUploadWidget
+                    uploadPreset="draftwork123"
+                    onSuccess={(result) =>
+                      handleUploadSuccess(result, "thumbnail")
+                    }
+                    options={{
+                      maxFiles: 1,
+                      resourceType: "image",
+                    }}
+                    onOpen={() => startUpload("thumbnail")}
+                  >
+                    {({ open }) => {
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => open()}
+                          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded flex-shrink-0"
+                          disabled={isUploading("thumbnail")}
+                        >
+                          {isUploading("thumbnail")
+                            ? "იტვირთება..."
+                            : "ატვირთვა"}
+                        </button>
+                      );
+                    }}
+                  </CldUploadWidget>
+                </div>
+                {project.ge.thumbnail && (
+                  <div className="mt-2 max-w-xs">
+                    <img
+                      src={project.ge.thumbnail}
+                      alt="Thumbnail preview"
+                      className="max-h-32 object-contain border rounded"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Project Images Section */}
+      <div className="bg-white shadow-md rounded-lg p-6 mb-8">
+        <h2 className="text-xl font-bold mb-4">პროექტის სურათები</h2>
+        <div className="space-y-4">
+          {project.ge.images.map((image, index) => (
+            <div
+              key={index}
+              className="flex items-center space-x-4 p-4 border rounded"
+            >
+              <div className="w-24 h-24 bg-gray-100 overflow-hidden rounded flex-shrink-0">
+                {image.src && (
+                  <img
+                    src={image.src}
+                    alt={image.alt || ""}
+                    className="object-cover w-full h-full"
+                  />
+                )}
+              </div>
+              <div className="flex-grow grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    სურათის მისამართი
+                  </label>
+                  <div className="flex space-x-2 items-center">
+                    <input
+                      type="text"
+                      value={image.src || ""}
+                      readOnly
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    />
+                    <CldUploadWidget
+                      uploadPreset="draftwork123"
+                      onSuccess={(result) =>
+                        handleUploadSuccess(result, "projectImage", index)
+                      }
+                      options={{
+                        maxFiles: 1,
+                        resourceType: "image",
+                      }}
+                      onOpen={() => startUpload("projectImage", index)}
+                    >
+                      {({ open }) => (
+                        <button
+                          type="button"
+                          onClick={() => open()}
+                          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded flex-shrink-0"
+                          disabled={isUploading("projectImage", index)}
+                        >
+                          {isUploading("projectImage", index)
+                            ? "..."
+                            : "ატვირთვა"}
+                        </button>
+                      )}
+                    </CldUploadWidget>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    სურათის აღწერა
+                  </label>
+                  <input
+                    type="text"
+                    value={image.alt}
+                    onChange={(e) =>
+                      handleImageAltChange(index, e.target.value)
+                    }
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+          <button
+            onClick={addImage}
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+          >
+            სურათის დამატება
+          </button>
         </div>
       </div>
 
