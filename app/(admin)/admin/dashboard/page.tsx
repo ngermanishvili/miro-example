@@ -1,9 +1,9 @@
 // app/(admin)/admin/dashboard/page.tsx
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { Project } from '@/types/project';
-import Link from 'next/link';
+import React, { useEffect, useState } from "react";
+import { Project } from "@/types/project";
+import Link from "next/link";
 
 const DashboardPage = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -14,17 +14,19 @@ const DashboardPage = () => {
     const fetchProjects = async () => {
       try {
         // Fetching from the API route we have
-        const response = await fetch('/api/projects');
+        const response = await fetch("/api/projects");
 
         if (!response.ok) {
-          throw new Error('Failed to fetch projects');
+          throw new Error("Failed to fetch projects");
         }
 
         const data = await response.json();
         setProjects(data);
       } catch (err) {
-        setError('პროექტების ჩატვირთვა ვერ მოხერხდა. გთხოვთ სცადოთ მოგვიანებით.');
-        console.error('Error fetching projects:', err);
+        setError(
+          "პროექტების ჩატვირთვა ვერ მოხერხდა. გთხოვთ სცადოთ მოგვიანებით."
+        );
+        console.error("Error fetching projects:", err);
       } finally {
         setLoading(false);
       }
@@ -36,7 +38,7 @@ const DashboardPage = () => {
   // Function to truncate long text
   const truncateText = (text: string, maxLength: number = 100) => {
     if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
+    return text.substring(0, maxLength) + "...";
   };
 
   if (loading) {
@@ -71,7 +73,7 @@ const DashboardPage = () => {
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">პროექტების მართვა</h1>
-        <Link href="/admin/dashboard/projects/new" passHref>
+        <Link href="/admin/dashboard/new" passHref>
           <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded">
             ახალი პროექტის დამატება
           </button>
@@ -105,7 +107,10 @@ const DashboardPage = () => {
           <tbody>
             {projects.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
+                <td
+                  colSpan={6}
+                  className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center"
+                >
                   პროექტები არ მოიძებნა
                 </td>
               </tr>
@@ -113,28 +118,44 @@ const DashboardPage = () => {
               projects.map((project) => (
                 <tr key={project.id} className="hover:bg-gray-50">
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">{project.id}</p>
+                    <p className="text-gray-900 whitespace-no-wrap">
+                      {project.id}
+                    </p>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">{project.ge.title}</p>
+                    <p className="text-gray-900 whitespace-no-wrap">
+                      {project.ge.title}
+                    </p>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">{project.en.title}</p>
+                    <p className="text-gray-900 whitespace-no-wrap">
+                      {project.en.title}
+                    </p>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">{project.ge.location}</p>
+                    <p className="text-gray-900 whitespace-no-wrap">
+                      {project.ge.location}
+                    </p>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">{project.ge.year}</p>
+                    <p className="text-gray-900 whitespace-no-wrap">
+                      {project.ge.year}
+                    </p>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                     <div className="flex space-x-2">
-                      <Link href={`/admin/dashboard/projects/${project.id}`} passHref>
+                      <Link
+                        href={`/admin/dashboard/projects/${project.id}`}
+                        passHref
+                      >
                         <button className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded">
                           ნახვა
                         </button>
                       </Link>
-                      <Link href={`/admin/dashboard/projects/${project.id}/edit`} passHref>
+                      <Link
+                        href={`/admin/dashboard/projects/${project.id}/edit`}
+                        passHref
+                      >
                         <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded">
                           რედაქტირება
                         </button>
@@ -142,9 +163,15 @@ const DashboardPage = () => {
                       <button
                         className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
                         onClick={() => {
-                          if (confirm(`დარწმუნებული ხართ, რომ გსურთ წაშალოთ პროექტი: ${project.ge.title}?`)) {
+                          if (
+                            confirm(
+                              `დარწმუნებული ხართ, რომ გსურთ წაშალოთ პროექტი: ${project.ge.title}?`
+                            )
+                          ) {
                             // თქვენ შეგიძლიათ აქ დაამატოთ წაშლის ფუნქციონალი მოგვიანებით
-                            alert(`პროექტის წაშლის ფუნქციონალი დაემატება მოგვიანებით`);
+                            alert(
+                              `პროექტის წაშლის ფუნქციონალი დაემატება მოგვიანებით`
+                            );
                           }
                         }}
                       >

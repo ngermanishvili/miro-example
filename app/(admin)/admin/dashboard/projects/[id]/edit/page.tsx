@@ -216,7 +216,85 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
 
         if (!response.ok) {
           if (response.status === 404) {
-            throw new Error("პროექტი ვერ მოიძებნა");
+            // For new projects that don't have data yet, initialize with empty structure
+            const emptyProject: Project = {
+              id: id,
+              ge: {
+                title: "",
+                shortDescription: "",
+                location: "",
+                function: "",
+                area: "",
+                year: "",
+                description: [""],
+                floors: [
+                  {
+                    name: "",
+                    image: "",
+                    measurements: [""],
+                    floorImages: [{ src: "", alt: "" }],
+                  },
+                ],
+                images: [
+                  {
+                    src: "",
+                    alt: "",
+                  },
+                ],
+                thumbnail: "",
+              },
+              en: {
+                title: "",
+                shortDescription: "",
+                location: "",
+                function: "",
+                area: "",
+                year: "",
+                description: [""],
+                floors: [
+                  {
+                    name: "",
+                    image: "",
+                    measurements: [""],
+                    floorImages: [{ src: "", alt: "" }],
+                  },
+                ],
+                images: [
+                  {
+                    src: "",
+                    alt: "",
+                  },
+                ],
+                thumbnail: "",
+              },
+              ru: {
+                title: "",
+                shortDescription: "",
+                location: "",
+                function: "",
+                area: "",
+                year: "",
+                description: [""],
+                floors: [
+                  {
+                    name: "",
+                    image: "",
+                    measurements: [""],
+                    floorImages: [{ src: "", alt: "" }],
+                  },
+                ],
+                images: [
+                  {
+                    src: "",
+                    alt: "",
+                  },
+                ],
+                thumbnail: "",
+              },
+            };
+            setProject(emptyProject);
+            setLoading(false);
+            return;
           }
           throw new Error("პროექტის ჩატვირთვა ვერ მოხერხდა");
         }
