@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useState, use } from 'react';
-import { Project } from '@/types/project';
-import Link from 'next/link';
-import Image from 'next/image';
+import React, { useEffect, useState, use } from "react";
+import { Project } from "@/types/project";
+import Link from "next/link";
+import Image from "next/image";
 
 interface ProjectViewPageProps {
   params: Promise<{ id: string }>;
@@ -24,16 +24,16 @@ const ProjectViewPage = ({ params }: ProjectViewPageProps) => {
 
         if (!response.ok) {
           if (response.status === 404) {
-            throw new Error('პროექტი ვერ მოიძებნა');
+            throw new Error("პროექტი ვერ მოიძებნა");
           }
-          throw new Error('პროექტის ჩატვირთვა ვერ მოხერხდა');
+          throw new Error("პროექტის ჩატვირთვა ვერ მოხერხდა");
         }
 
         const data = await response.json();
         setProject(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'უცნობი შეცდომა');
-        console.error('Error fetching project:', err);
+        setError(err instanceof Error ? err.message : "უცნობი შეცდომა");
+        console.error("Error fetching project:", err);
       } finally {
         setLoading(false);
       }
@@ -65,7 +65,7 @@ const ProjectViewPage = ({ params }: ProjectViewPageProps) => {
           <h1 className="text-3xl font-bold">პროექტის დეტალები</h1>
         </div>
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <p>{error || 'პროექტი ვერ მოიძებნა'}</p>
+          <p>{error || "პროექტი ვერ მოიძებნა"}</p>
         </div>
       </div>
     );
@@ -80,7 +80,9 @@ const ProjectViewPage = ({ params }: ProjectViewPageProps) => {
               ← უკან დაბრუნება
             </button>
           </Link>
-          <h1 className="text-3xl font-bold">პროექტის დეტალები: {project.ge.title}</h1>
+          <h1 className="text-3xl font-bold">
+            პროექტის დეტალები: {project.ge.title}
+          </h1>
         </div>
         <Link href={`/admin/dashboard/projects/${project.id}/edit`} passHref>
           <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded">
@@ -107,7 +109,9 @@ const ProjectViewPage = ({ params }: ProjectViewPageProps) => {
           {/* პროექტის მონაცემები */}
           <div className="md:col-span-2">
             <div className="mb-6">
-              <h2 className="text-xl font-bold border-b pb-2 mb-4">ძირითადი ინფორმაცია</h2>
+              <h2 className="text-xl font-bold border-b pb-2 mb-4">
+                ძირითადი ინფორმაცია
+              </h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-gray-600 font-semibold">ID:</p>
@@ -133,7 +137,9 @@ const ProjectViewPage = ({ params }: ProjectViewPageProps) => {
             </div>
 
             <div>
-              <h2 className="text-xl font-bold border-b pb-2 mb-4">მოკლე აღწერა</h2>
+              <h2 className="text-xl font-bold border-b pb-2 mb-4">
+                მოკლე აღწერა
+              </h2>
               <p>{project.ge.shortDescription}</p>
             </div>
           </div>
@@ -143,7 +149,9 @@ const ProjectViewPage = ({ params }: ProjectViewPageProps) => {
       {/* ენების ჩანართები */}
       <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
         <div className="p-6">
-          <h2 className="text-xl font-bold border-b pb-2 mb-4">პროექტის სახელები ყველა ენაზე</h2>
+          <h2 className="text-xl font-bold border-b pb-2 mb-4">
+            პროექტის სახელები ყველა ენაზე
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="border p-4 rounded shadow-sm">
               <h3 className="font-bold mb-2">ქართული</h3>
@@ -164,10 +172,14 @@ const ProjectViewPage = ({ params }: ProjectViewPageProps) => {
       {/* სრული აღწერა */}
       <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
         <div className="p-6">
-          <h2 className="text-xl font-bold border-b pb-2 mb-4">სრული აღწერა (ქართული)</h2>
+          <h2 className="text-xl font-bold border-b pb-2 mb-4">
+            სრული აღწერა (ქართული)
+          </h2>
           <div className="space-y-4">
             {project.ge.description.map((paragraph, index) => (
-              <p key={index} className="text-gray-700">{paragraph}</p>
+              <p key={index} className="text-gray-700">
+                {paragraph}
+              </p>
             ))}
           </div>
         </div>
@@ -176,15 +188,22 @@ const ProjectViewPage = ({ params }: ProjectViewPageProps) => {
       {/* სურათების გალერეა */}
       <div className="bg-white shadow-md rounded-lg overflow-hidden mb-8">
         <div className="p-6">
-          <h2 className="text-xl font-bold border-b pb-2 mb-4">სურათების გალერეა</h2>
+          <h2 className="text-xl font-bold border-b pb-2 mb-4">
+            სურათების გალერეა
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {project.ge.images.map((image, index) => (
-              <div key={index} className="relative h-48 bg-gray-100 rounded overflow-hidden">
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="object-cover w-full h-full"
-                />
+              <div
+                key={index}
+                className="relative h-48 bg-gray-100 rounded overflow-hidden"
+              >
+                {image.src && (
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    className="object-cover w-full h-full"
+                  />
+                )}
                 <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white p-2 text-sm">
                   {image.alt}
                 </div>
@@ -197,53 +216,63 @@ const ProjectViewPage = ({ params }: ProjectViewPageProps) => {
       {/* სართულები */}
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
         <div className="p-6">
-          <h2 className="text-xl font-bold border-b pb-2 mb-4">სართულები და გეგმები</h2>
-          {project.ge.floors && project.ge.floors.map((floor, floorIndex) => (
-            <div key={floorIndex} className="mb-6 last:mb-0">
-              <h3 className="font-bold text-lg mb-2">{floor.name}</h3>
+          <h2 className="text-xl font-bold border-b pb-2 mb-4">
+            სართულები და გეგმები
+          </h2>
+          {project.ge.floors &&
+            project.ge.floors.map((floor, floorIndex) => (
+              <div key={floorIndex} className="mb-6 last:mb-0">
+                <h3 className="font-bold text-lg mb-2">{floor.name}</h3>
 
-              {/* სართულის გეგმა */}
-              {floor.image && (
-                <div className="mb-4 relative h-64 bg-gray-100 rounded overflow-hidden">
-                  <img
-                    src={floor.image}
-                    alt={`${floor.name} გეგმა`}
-                    className="object-contain w-full h-full"
-                  />
-                </div>
-              )}
-
-              {/* გაზომვები */}
-              {floor.measurements && floor.measurements.length > 0 && floor.measurements[0] !== "" && (
-                <div className="mb-4">
-                  <h4 className="font-semibold mb-2">გაზომვები:</h4>
-                  <ul className="list-disc list-inside">
-                    {floor.measurements.map((measurement, measureIndex) => (
-                      <li key={measureIndex}>{measurement}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* სართულის დამატებითი სურათები */}
-              {floor.floorImages && floor.floorImages.length > 0 && (
-                <div>
-                  <h4 className="font-semibold mb-2">სართულის სურათები:</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {floor.floorImages.map((image, imageIndex) => (
-                      <div key={imageIndex} className="relative h-48 bg-gray-100 rounded overflow-hidden">
-                        <img
-                          src={image.src}
-                          alt={image.alt}
-                          className="object-cover w-full h-full"
-                        />
-                      </div>
-                    ))}
+                {/* სართულის გეგმა */}
+                {floor.image && (
+                  <div className="mb-4 relative h-64 bg-gray-100 rounded overflow-hidden">
+                    <img
+                      src={floor.image}
+                      alt={`${floor.name} გეგმა`}
+                      className="object-contain w-full h-full"
+                    />
                   </div>
-                </div>
-              )}
-            </div>
-          ))}
+                )}
+
+                {/* გაზომვები */}
+                {floor.measurements &&
+                  floor.measurements.length > 0 &&
+                  floor.measurements[0] !== "" && (
+                    <div className="mb-4">
+                      <h4 className="font-semibold mb-2">გაზომვები:</h4>
+                      <ul className="list-disc list-inside">
+                        {floor.measurements.map((measurement, measureIndex) => (
+                          <li key={measureIndex}>{measurement}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                {/* სართულის დამატებითი სურათები */}
+                {floor.floorImages && floor.floorImages.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold mb-2">სართულის სურათები:</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {floor.floorImages.map((image, imageIndex) => (
+                        <div
+                          key={imageIndex}
+                          className="relative h-48 bg-gray-100 rounded overflow-hidden"
+                        >
+                          {image.src && (
+                            <img
+                              src={image.src}
+                              alt={image.alt}
+                              className="object-cover w-full h-full"
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
         </div>
       </div>
     </div>

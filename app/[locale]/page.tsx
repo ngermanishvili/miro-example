@@ -55,20 +55,51 @@ function ProjectCard({
     return null;
   }
 
+  // Better URL validation
+  const isValidUrl = (url: string | null | undefined): boolean => {
+    if (!url) return false;
+
+    // Check for absolute URLs (http:// or https://)
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      try {
+        new URL(url);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    // Check for valid relative URLs (must start with /)
+    return url.startsWith("/");
+  };
+
+  // Get a valid image URL or return a placeholder
+  const getValidImageUrl = (url: string | null | undefined): string => {
+    if (!url) return "/assets/placeholder.jpg";
+    if (isValidUrl(url)) return url;
+    // If URL doesn't start with /, add it (assuming it's a relative path)
+    if (!url.startsWith("/")) return `/${url}`;
+    return "/assets/placeholder.jpg";
+  };
+
+  const thumbnailUrl = getValidImageUrl(localeData.thumbnail);
+  const isLocalAsset = thumbnailUrl.startsWith("/assets");
+
   return (
     <Link href={`/${locale}/projects/${project.id}`} prefetch={true}>
       <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
         <div className="relative h-64">
-          {localeData.thumbnail && localeData.thumbnail.startsWith("http") && (
-            <Image
-              src={localeData.thumbnail}
-              alt={localeData.title || ""}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-              style={{ objectFit: "cover" }}
-            />
-          )}
+          <Image
+            src={thumbnailUrl}
+            alt={localeData.title || "Project thumbnail"}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            style={{ objectFit: "cover" }}
+            quality={100}
+            priority
+            unoptimized={isLocalAsset}
+          />
         </div>
         <div className="p-4">
           <h2 className="text-xl font-semibold mb-2">
