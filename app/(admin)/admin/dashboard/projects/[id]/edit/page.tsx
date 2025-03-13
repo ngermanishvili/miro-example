@@ -105,6 +105,18 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
         return {
           ...prev,
           ge: { ...prev.ge, images: newImages },
+          en: {
+            ...prev.en,
+            images: prev.en.images.map((img, i) =>
+              i === index ? { ...img, src: secureUrl } : img
+            ),
+          },
+          ru: {
+            ...prev.ru,
+            images: prev.ru.images.map((img, i) =>
+              i === index ? { ...img, src: secureUrl } : img
+            ),
+          },
         };
       });
     } else if (uploadType === "floorImage" && typeof floorIndex === "number") {
@@ -120,6 +132,18 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
         return {
           ...prev,
           ge: { ...prev.ge, floors: newFloors },
+          en: {
+            ...prev.en,
+            floors: prev.en.floors.map((floor, i) =>
+              i === floorIndex ? { ...floor, image: secureUrl } : floor
+            ),
+          },
+          ru: {
+            ...prev.ru,
+            floors: prev.ru.floors.map((floor, i) =>
+              i === floorIndex ? { ...floor, image: secureUrl } : floor
+            ),
+          },
         };
       });
     } else if (
@@ -146,6 +170,32 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
         return {
           ...prev,
           ge: { ...prev.ge, floors: newFloors },
+          en: {
+            ...prev.en,
+            floors: prev.en.floors.map((floor, i) =>
+              i === floorIndex
+                ? {
+                    ...floor,
+                    floorImages: floor.floorImages?.map((img, j) =>
+                      j === imageIndex ? { ...img, src: secureUrl } : img
+                    ),
+                  }
+                : floor
+            ),
+          },
+          ru: {
+            ...prev.ru,
+            floors: prev.ru.floors.map((floor, i) =>
+              i === floorIndex
+                ? {
+                    ...floor,
+                    floorImages: floor.floorImages?.map((img, j) =>
+                      j === imageIndex ? { ...img, src: secureUrl } : img
+                    ),
+                  }
+                : floor
+            ),
+          },
         };
       });
     }
@@ -448,12 +498,60 @@ const ProjectEditPage = ({ params }: ProjectEditPageProps) => {
     setSuccessMessage(null);
 
     try {
+      // Synchronize image URLs across all language versions before saving
+      const syncedProject = { ...project };
+
+      // Sync thumbnail
+      if (syncedProject.ge.thumbnail) {
+        syncedProject.en.thumbnail = syncedProject.ge.thumbnail;
+        syncedProject.ru.thumbnail = syncedProject.ge.thumbnail;
+      }
+
+      // Sync project images
+      syncedProject.ge.images.forEach((image, index) => {
+        if (syncedProject.en.images[index] && image.src) {
+          syncedProject.en.images[index].src = image.src;
+        }
+        if (syncedProject.ru.images[index] && image.src) {
+          syncedProject.ru.images[index].src = image.src;
+        }
+      });
+
+      // Sync floor images
+      syncedProject.ge.floors.forEach((floor, floorIndex) => {
+        // Sync main floor image
+        if (floor.image && syncedProject.en.floors[floorIndex]) {
+          syncedProject.en.floors[floorIndex].image = floor.image;
+          syncedProject.ru.floors[floorIndex].image = floor.image;
+        }
+
+        // Sync floor gallery images
+        if (floor.floorImages) {
+          floor.floorImages.forEach((image, imageIndex) => {
+            if (
+              image.src &&
+              syncedProject.en.floors[floorIndex]?.floorImages?.[imageIndex]
+            ) {
+              syncedProject.en.floors[floorIndex].floorImages[imageIndex].src =
+                image.src;
+            }
+            if (
+              image.src &&
+              syncedProject.ru.floors[floorIndex]?.floorImages?.[imageIndex]
+            ) {
+              syncedProject.ru.floors[floorIndex].floorImages[imageIndex].src =
+                image.src;
+            }
+          });
+        }
+      });
+
       const response = await fetch(`/api/projects/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(project),
+        body: JSON.stringify(syncedProject),
       });
 
       const data = await response.json();
