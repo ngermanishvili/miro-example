@@ -27,8 +27,8 @@ const PUBLIC_APIS = [
 const intlMiddleware = createIntlMiddleware({
     ...routing,
     localePrefix: "always",
-    defaultLocale: '/',
-    locales: ['ka', 'en', 'ru']
+    defaultLocale: 'en',
+    locales: ['en', 'ka', 'ru']
 });
 
 export async function middleware(request) {
@@ -36,7 +36,7 @@ export async function middleware(request) {
 
     // For root path, redirect to default locale
     if (path === '/') {
-        return NextResponse.redirect(new URL('/ka', request.url));
+        return NextResponse.redirect(new URL('/en', request.url));
     }
 
     // Handle API routes
@@ -67,14 +67,14 @@ export async function middleware(request) {
         try {
             const token = request.cookies.get('auth_token')?.value;
             if (!token) {
-                return NextResponse.redirect(new URL('/ka/login', request.url));
+                return NextResponse.redirect(new URL('/en/login', request.url));
             }
 
             await jwtVerify(token, new TextEncoder().encode(JWT_SECRET));
             return NextResponse.next();
         } catch (error) {
             console.error('Admin auth error:', error);
-            return NextResponse.redirect(new URL('/ka/login', request.url));
+            return NextResponse.redirect(new URL('/en/login', request.url));
         }
     }
 

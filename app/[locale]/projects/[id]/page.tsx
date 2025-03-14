@@ -60,7 +60,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
   return (
     <>
-      <div className="min-h-screen w-full flex flex-col lg:flex-row">
+      <div className="min-h-screen w-full flex flex-col lg:flex-row ">
         {/* Left Panel - პროექტის ინფორმაცია - ფიქსირებული სიმაღლით და სქროლით */}
         <div className="w-full lg:w-1/3 mt-8 border-r border-gray-200 pt-24 z-0 lg:h-[100vh] lg:overflow-y-auto">
           <div className="p-6 lg:p-8 pb-24">
@@ -85,8 +85,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   {locale === "ka"
                     ? "პროექტებზე დაბრუნება"
                     : locale === "ru"
-                    ? "Вернуться к проектам"
-                    : "Back to Projects"}
+                      ? "Вернуться к проектам"
+                      : "Back to Projects"}
                 </div>
               </Link>
 
@@ -105,8 +105,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       {locale === "ka"
                         ? "მდებარეობა:"
                         : locale === "ru"
-                        ? "РАСПОЛОЖЕНИЕ:"
-                        : "LOCATION:"}
+                          ? "РАСПОЛОЖЕНИЕ:"
+                          : "LOCATION:"}
                     </p>
                     <p>{projectData.location}</p>
                   </div>
@@ -115,8 +115,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       {locale === "ka"
                         ? "ფუნქცია:"
                         : locale === "ru"
-                        ? "ФУНКЦИЯ:"
-                        : "FUNCTION:"}
+                          ? "ФУНКЦИЯ:"
+                          : "FUNCTION:"}
                     </p>
                     <p>{projectData.function}</p>
                   </div>
@@ -125,8 +125,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       {locale === "ka"
                         ? "ფართობი:"
                         : locale === "ru"
-                        ? "ПЛОЩАДЬ:"
-                        : "AREA:"}
+                          ? "ПЛОЩАДЬ:"
+                          : "AREA:"}
                     </p>
                     <p>{projectData.area}</p>
                   </div>
@@ -135,8 +135,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       {locale === "ka"
                         ? "წელი:"
                         : locale === "ru"
-                        ? "ГОД:"
-                        : "YEAR:"}
+                          ? "ГОД:"
+                          : "YEAR:"}
                     </p>
                     <p>{projectData.year}</p>
                   </div>
@@ -149,8 +149,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   {locale === "ka"
                     ? "აღწერა:"
                     : locale === "ru"
-                    ? "ОПИСАНИЕ:"
-                    : "DESCRIPTION:"}
+                      ? "ОПИСАНИЕ:"
+                      : "DESCRIPTION:"}
                 </h2>
                 <div className="space-y-4 text-gray-700">
                   {isCraftsSchool ? (

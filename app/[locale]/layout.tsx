@@ -13,8 +13,10 @@ interface LayoutProps {
 
 export default async function RootLayout({
   children,
-  params: { locale },
+  params,
 }: LayoutProps) {
+  const { locale } = params;  // Access locale after params is properly awaited
+
   return (
     <html lang={locale}>
       <body className={inter.className}>
