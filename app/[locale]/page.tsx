@@ -102,13 +102,16 @@ function ProjectCard({
           />
         </div>
         <div className="p-4">
-          <h2 className="text-xl font-semibold mb-2">
-            {localeData.title || ""}
-          </h2>
-          <p className="text-gray-600 mb-2">{localeData.location || ""}</p>
-          <p className="text-sm text-gray-500">
-            {localeData.function || ""} | {localeData.area || ""} |{" "}
-            {localeData.year || ""}
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-xl font-semibold">
+              {localeData.title || ""}
+            </h2>
+            <p className="text-sm text-gray-500">
+              {localeData.year || ""}
+            </p>
+          </div>
+          <p className="text-gray-600">
+            {localeData.location || ""}
           </p>
         </div>
       </div>
@@ -248,40 +251,20 @@ const Home: NextPage = () => {
                   <h2 className="text-3xl mb-4 font-bold text-gray-900">
                     {pageTitle[localeState.typed]}
                   </h2>
-                  <h3 className="text-xl text-gray-600">
+                  <p className="text-xl text-gray-600">
                     {latestCreations[localeState.typed]}
-                  </h3>
-                </div>
-              </div>
-
-              {isLoading ? (
-                <div className="flex justify-center items-center h-32">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
-                </div>
-              ) : error ? (
-                <div className="flex justify-center items-center h-32 text-red-500">
-                  <div>
-                    <p className="font-bold">Error loading projects:</p>
-                    <p>{error.message}</p>
-                  </div>
-                </div>
-              ) : projects.length === 0 ? (
-                <div className="flex justify-center items-center h-32">
-                  <p className="text-gray-600">
-                    No projects found. Please check your API endpoint.
                   </p>
                 </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {projects.map((project: Project) => (
-                    <ProjectCard
-                      key={project.id}
-                      project={project}
-                      locale={localeState.raw}
-                    />
-                  ))}
-                </div>
-              )}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {projects.map((project) => (
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
+                    locale={localeState.raw}
+                  />
+                ))}
+              </div>
             </section>
           </motion.div>
         )}

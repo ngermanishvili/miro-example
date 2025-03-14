@@ -11,11 +11,12 @@ interface LayoutProps {
   params: { locale: string };
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
   params,
 }: LayoutProps) {
-  const { locale } = params;  // Access locale after params is properly awaited
+  // Extract locale from params directly, no need for await as it's already available
+  const locale = params.locale;
 
   return (
     <html lang={locale}>
