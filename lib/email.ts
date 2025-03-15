@@ -4,7 +4,7 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendVerificationEmail(email: string, token: string) {
-  const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/verify-email?token=${token}`;
+  const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL }/api/verify-email?token=${token}`;
 
   const { data, error } = await resend.emails.send({
     from: process.env.EMAIL_FROM || "onboarding@resend.dev",

@@ -97,7 +97,7 @@ export default function DashboardHero() {
                     </div>
 
                     {/* Stats Section */}
-                    <div className="flex-1 flex gap-4 mb-6">
+                    {/* <div className="flex-1 flex gap-4 mb-6">
                         <div className="flex gap-4">
                             <StatsCard
                                 icon={<Trophy className="w-5 h-5" />}
@@ -115,7 +115,7 @@ export default function DashboardHero() {
                                 value="164"
                             />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
