@@ -45,9 +45,30 @@ export async function generateMetadata({
   const resolvedParams = await params;
   const { locale } = resolvedParams;
 
+  // SEO Titles based on language
+  const title =
+    locale === "ka" ? "პროექტები | Draftworks Project" :
+      locale === "ru" ? "Проекты | Draftworks Project" :
+        "Projects | Draftworks Project";
+
+  // SEO Descriptions based on language
+  const description =
+    locale === "ka" ? "ნახეთ ჩვენი პროექტები და დარწმუნდით ჩვენს პროფესიონალიზმში. ჩვენ გთავაზობთ საუკეთესო არქიტექტურულ გადაწყვეტილებებს." :
+      locale === "ru" ? "Ознакомьтесь с нашими проектами и убедитесь в нашем профессионализме. Мы предлагаем лучшие архитектурные решения." :
+        "Explore our diverse architectural projects showcasing our expertise in design and construction. See our portfolio of successful architectural designs.";
+
   return {
-    title:
-      locale === "ka" ? "პროექტები" : locale === "ru" ? "Проекты" : "Projects",
+    title,
+    description,
+    keywords: ['architecture projects', 'design portfolio', 'building designs', 'draftworks', 'architectural solutions'],
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      locale: locale === 'ka' ? 'ka_GE' : locale === 'ru' ? 'ru_RU' : 'en_US',
+      url: `https://draftworksproject.com/${locale}/projects`,
+      siteName: 'Draftworks Project',
+    },
   };
 }
 
@@ -68,7 +89,7 @@ export default async function ProjectsPage({ params }: PageProps) {
             : "Projects"}
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {projects.map((project) => {
           const localeData: ProjectLanguageData =
             (project[localeKey] as ProjectLanguageData) || project.ge;
@@ -82,29 +103,36 @@ export default async function ProjectsPage({ params }: PageProps) {
               href={`/${locale}/projects/${project.id}`}
               className="block group"
             >
-              <div className="overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="relative h-64">
+              <div className="overflow-hidden bg-white shadow-sm hover:shadow-md transition duration-300">
+                {/* Image Container */}
+                <div className="relative h-72 overflow-hidden">
                   <Image
                     src={thumbnailUrl}
                     alt={localeData.title || "Project thumbnail"}
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    style={{ objectFit: "cover" }}
                     quality={100}
                     priority
                     unoptimized={isLocalAsset}
                   />
                 </div>
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-2">
-                    {localeData.title}
-                  </h2>
-                  <p className="text-gray-600 mb-2">{localeData.location}</p>
-                  <p className="text-sm text-gray-500">
-                    {localeData.function} | {localeData.area} |{" "}
-                    {localeData.year}
-                  </p>
+
+                {/* Space between image and separator */}
+                <div className="h-3"></div>
+
+                {/* Separator Line */}
+                <div className="h-[2px] w-full bg-black"></div>
+
+                {/* Content Container */}
+                <div className="py-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <h2 className="text-xl font-bold text-gray-900 pl-1">
+                      {localeData.title}
+                    </h2>
+                    <p className="text-sm text-gray-500 pr-4">{localeData.year}</p>
+                  </div>
+                  <p className="text-gray-600 pl-1">{localeData.location}</p>
                 </div>
               </div>
             </Link>

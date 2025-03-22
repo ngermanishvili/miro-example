@@ -1,6 +1,9 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
 import { ProjectLanguageData } from "@/types/project";
+import Lightbox from "./Lightbox";
 
 interface ImageGalleryProps {
   images: ProjectLanguageData["images"];
@@ -34,67 +37,73 @@ const getValidImageUrl = (url: string | null | undefined): string => {
 };
 
 export default function ImageGallery({ images }: ImageGalleryProps) {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   // Filter out images with invalid URLs to prevent rendering errors
   const validImages =
     images?.filter((img) => img && img.src && isValidUrl(img.src)) || [];
+
+  // Format images for lightbox
+  const lightboxImages = validImages.map(img => ({
+    src: getValidImageUrl(img.src),
+    alt: img.alt || ""
+  }));
 
   // თუ სურათები არ არის
   if (validImages.length === 0) {
     return null;
   }
 
-  const firstImageSrc = getValidImageUrl(validImages[0].src);
-  const isFirstLocalAsset = firstImageSrc.startsWith("/assets");
+  const openLightbox = (index: number) => {
+    setCurrentImageIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+  };
 
   return (
-    <div className="space-y-8 mt-8">
-      {/* პირველი სურათი - დიდი, სრული სიგანის */}
-      {validImages.length > 0 && (
-        <div className="relative w-full aspect-[16/9] mb-8">
-          <Image
-            src={firstImageSrc}
-            alt={validImages[0].alt || "Project image"}
-            fill
-            sizes="(max-width: 768px) 100vw, 75vw"
-            style={{ objectFit: "cover" }}
-            className="rounded-lg shadow-lg"
-            priority // პირველი სურათი მნიშვნელოვანია, ამიტომ priority
-            placeholder="blur"
-            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFeAKJJHagMgAAAABJRU5ErkJggg=="
-            unoptimized={isFirstLocalAsset}
-          />
-        </div>
-      )}
+    <>
+      <div className="space-y-8 mt-8 overflow-y-auto h-[calc(100vh-120px)]">
+        {/* ყველა სურათი - ვერტიკალურად ერთ სვეტად */}
+        {validImages.map((image, idx) => {
+          const imageSrc = getValidImageUrl(image.src);
+          const isLocalAsset = imageSrc.startsWith("/assets");
 
-      {/* დანარჩენი სურათები - 2 სვეტად */}
-      {validImages.length > 1 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {validImages.slice(1).map((image, idx) => {
-            const imageSrc = getValidImageUrl(image.src);
-            const isLocalAsset = imageSrc.startsWith("/assets");
-
-            return (
-              <div
-                key={idx}
-                className="relative aspect-[4/3] transition-transform duration-300 hover:translate-y-[-5px]"
-              >
+          return (
+            <div
+              key={idx}
+              className="relative w-full mb-8 cursor-pointer"
+              onClick={() => openLightbox(idx)}
+            >
+              <div className="relative aspect-[4/3] w-full">
                 <Image
                   src={imageSrc}
-                  alt={image.alt || `Project image ${idx + 2}`}
+                  alt={image.alt || `Project image ${idx + 1}`}
                   fill
-                  sizes="(max-width: 768px) 100vw, 35vw"
+                  sizes="(max-width: 768px) 100vw, 67vw"
                   style={{ objectFit: "cover" }}
-                  className="rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300"
-                  loading="lazy"
+                  className="transition-transform duration-300 hover:opacity-90"
+                  loading={idx === 0 ? "eager" : "lazy"}
                   placeholder="blur"
                   blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFeAKJJHagMgAAAABJRU5ErkJggg=="
                   unoptimized={isLocalAsset}
                 />
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {lightboxOpen && (
+        <Lightbox
+          images={lightboxImages}
+          currentIndex={currentImageIndex}
+          onClose={closeLightbox}
+        />
       )}
-    </div>
+    </>
   );
 }

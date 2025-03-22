@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Globe } from "lucide-react";
 
 interface Language {
@@ -21,6 +21,7 @@ export const LanguageSwitcher = () => {
     const pathname = usePathname();
     const params = useParams();
     const currentLocale = (params?.locale as string) || "ka";
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -48,19 +49,27 @@ export const LanguageSwitcher = () => {
 
     // Close dropdown when clicking outside
     useEffect(() => {
-        const handleClickOutside = () => setIsOpen(false);
-        document.addEventListener("click", handleClickOutside);
-        return () => document.removeEventListener("click", handleClickOutside);
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    const toggleDropdown = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsOpen(!isOpen);
+    };
+
     return (
-        <div className="relative">
+        <div className="relative" ref={dropdownRef}>
             <button
                 className="flex items-center space-x-1 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    setIsOpen(!isOpen);
-                }}
+                onClick={toggleDropdown}
+                style={{ fontFamily: currentLocale === "ka" ? '"Bebas Neue", sans-serif' : '"Montserrat", sans-serif' }}
             >
                 <Globe className="h-4 w-4" />
                 <span>{currentLanguage.nativeName}</span>
@@ -69,7 +78,6 @@ export const LanguageSwitcher = () => {
             {isOpen && (
                 <div
                     className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
-                    onClick={(e) => e.stopPropagation()}
                 >
                     <div className="py-1" role="menu">
                         {languages.map((language) => (
@@ -80,7 +88,11 @@ export const LanguageSwitcher = () => {
                                     : "text-gray-700 hover:bg-gray-100"
                                     }`}
                                 role="menuitem"
-                                onClick={() => changeLanguage(language.code)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    changeLanguage(language.code);
+                                }}
+                                style={{ fontFamily: language.code === "ka" ? '"Bebas Neue", sans-serif' : '"Montserrat", sans-serif' }}
                             >
                                 <span className="flex items-center">
                                     {language.nativeName}

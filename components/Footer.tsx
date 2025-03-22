@@ -2,7 +2,7 @@ import { Mail, Linkedin, Instagram, Phone } from 'lucide-react';
 
 const Footer = () => {
     return (
-        <footer className="w-full border-t border-gray-200 bg-white py-8">
+        <footer className="w-full bg-white py-8">
             <div className="container mx-auto max-w-6xl px-4">
                 {/* Using flex-row by default and flex-col on small screens */}
                 <div className="flex flex-row items-center justify-between gap-6 sm:gap-8 max-sm:flex-col">

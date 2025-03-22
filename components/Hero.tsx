@@ -25,25 +25,34 @@ const Hero = () => {
     };
 
     return (
-        <>
-            <div className="w-full flex justify-center mt-[50px]">
-                <section className="relative h-[75vh] w-full max-w-[900px] mt-[120px] border-8 border-black p-4">
-                    <div className="w-full h-full relative overflow-hidden">
-                        <Image
-                            src="/assets/giphy-main-animation.gif" // Update this path to your actual GIF location
-                            alt="Hero animation"
-                            fill
-                            objectFit="cover"
-                            priority
-                            className="absolute w-full h-full"
-                        />
+        <div className="flex flex-col items-center justify-center w-full max-w-[1200px] px-4 mt-[50px]">
+            {/* Animation container */}
+            <div className="w-full flex justify-center mb-8">
+                {/* Outer frame with border */}
+                <div className="relative w-full md:w-[1000px] lg:w-[1400px] h-[250px] sm:h-[350px] md:h-[450px] border-[8px] md:border-[16px] border-black overflow-hidden">
+                    {/* Inner content with padding */}
+                    <div className="absolute inset-0 px-[50px] sm:px-[100px] md:px-[150px] lg:px-[250px] py-[10px] md:py-[20px]">
+                        {/* Image container */}
+                        <div className="relative w-full h-full">
+                            <Image
+                                src="/assets/giphy-main-animation.gif"
+                                alt="Hero animation"
+                                fill
+                                priority
+                                className="object-cover"
+                            />
+                        </div>
                     </div>
-                </section>
+                </div>
             </div>
-            <span className='text-black text-2xl font-bold flex items-center justify-center py-8 text-center px-4 mt-4'>
-                {heroText[locale]}
-            </span>
-        </>
+
+            {/* Text below animation */}
+            <div className="w-full max-w-3xl text-center px-4">
+                <p className="text-black text-base sm:text-lg md:text-xl lg:text-2xl font-semibold">
+                    {heroText[locale]}
+                </p>
+            </div>
+        </div>
     );
 };
 
