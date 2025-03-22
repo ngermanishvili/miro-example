@@ -25,7 +25,7 @@ const Hero = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center w-full max-w-[1200px] px-4 mt-[50px]">
+        <div className="flex flex-col items-center justify-center w-full container px-4 mt-[50px]">
             {/* Animation container */}
             <div className="w-full flex justify-center mb-8">
                 {/* Outer frame with border */}
